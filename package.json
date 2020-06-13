@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch":"lsc -wco dist src",
-    "build":"lsc -co dist src",
+    "watch": "lsc -wco dist src",
+    "build": "lsc -co dist src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "bung87",
   "license": "MIT",
   "devDependencies": {
     "livescript": "^1.6.0"
+  },
+  "dependencies": {
+    "gitignore-globs": "^0.1.1",
+    "glob": "^7.1.6"
   }
 }
