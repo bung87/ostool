@@ -14,9 +14,11 @@ types = (pkgName) -> "![Types](https://badgen.net/npm/types/#{pkgName})"
 deps = (username,repo) -> "![Dep](https://badgen.net/david/dep/#{username}/#{repo})"
 license = (pkgName) -> "![license](https://badgen.net/npm/license/#{pkgName})"
 
+const lgtmNotSupport = [".ls"]
 const cwd = process .cwd!
 const readme = path.join(cwd,"README.md")
 const primary = sourceFilesOrdered![0][0]
+
 export applybadges = ->
     if fs.existsSync readme
         pkg = require path.join(cwd,"package.json")
@@ -38,8 +40,12 @@ export applybadges = ->
             ++i
         badges = 
             buildStatus username,repo
-            lgtmAlert username,repo
-            lgtmGrade username,repo
+            (if lgtmNotSupport.includes primary == false
+            then  lgtmAlert username,repo
+            )
+            (if lgtmNotSupport.includes primary == false
+            then  lgtmGrade username,repo
+            )
             npmVersion pkgName
             npmDownloads pkgName
             (if primary == ".ts" 
@@ -49,7 +55,6 @@ export applybadges = ->
             license pkgName
         bs = []
         j = 0
-
         for badge in badges.filter( (x) -> x )
             if (origin .indexOf badge) == -1
                 j += badge.length
@@ -58,7 +63,7 @@ export applybadges = ->
         fs.writeFileSync(readme,content)
 
 function ignores
-    result = []
+    result = ["*.json","*.md"]
     dotgitignores = path.join(cwd,".gitignore")
     dotnpmignores = path.join(cwd,".npmignore")
     gitignores = parse dotgitignores if fs.existsSync dotgitignores
