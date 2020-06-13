@@ -1,0 +1,16 @@
+{
+  "name": "ostool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch":"lsc -wco dist src",
+    "build":"lsc -co dist src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bung87",
+  "license": "MIT",
+  "devDependencies": {
+    "livescript": "^1.6.0"
+  }
+}
