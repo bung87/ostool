@@ -2,8 +2,12 @@ require! {
   fs
   path
   glob
+  rimraf
+  process
 }
+const {reject} = require 'prelude-ls'
 const parse = require 'gitignore-globs'
+const { spawnSync,spawn } = require 'child_process'
 # const _ = require 'prelude-ls'
 buildStatus = (username,repo) -> "[![Build Status](https://travis-ci.org/#{username}/#{repo}.svg?branch=master)](https://travis-ci.org/#{username}/#{repo})"
 lgtmAlert =  (username,repo) -> "[![Total alerts](https://img.shields.io/lgtm/alerts/g/#{username}/#{repo}.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/#{username}/#{repo}/alerts/)"
@@ -19,6 +23,89 @@ const cwd = process .cwd!
 const readme = path.join(cwd,"README.md")
 const primary = sourceFilesOrdered![0][0]
 
+function isJsEcosystem
+    fs.existsSync path.join(cwd,"package.json")
+
+function useYarn
+    fs.existsSync path.join(cwd,"yarn.lock")
+
+function useNpm 
+    fs.existsSync path.join(cwd,"package-lock.json")
+    
+function usePnpm
+    fs.existsSync path.join(cwd,"pnpm-lock.yaml")
+
+export function runOut (cmd,...args)
+    spawn(cmd, args,{stdio:'inherit'})
+
+export function runIn (cmd,...args)
+    child = spawnSync(cmd, args,{ stdio: 'pipe' })
+    child.stdout?.toString!.trim!
+
+function copyFile (src,des)
+    fs.createReadStream(path.join(__dirname,src)).pipe(fs.createWriteStream(path.join(__dirname,dest)));
+
+export function whichPm
+    ## find which package manager be used (result cached)
+    if not whichPm.result
+        switch
+        case useYarn!
+            whichPm.result = "yarn"
+        case useNpm!
+            whichPm.result = "npm"
+        case usePnpm!
+            whichPm.result = "pnpm"
+    else
+        whichPm.result
+
+export function cleanTask
+    pkg = require path.join(cwd,"package.json")
+    if "files" of pkg
+        if pkg.files.length > 1
+            pattern = "{#{pkg.files.join(",")}}"
+        else if pkg.files.length  == 1
+            pattern = pkg.files.join("")
+        # glob.sync pattern,{cwd:cwd}
+        rimraf.sync(pattern)
+
+export function installTask (...deps)
+    pm = whichPm!
+    switch pm
+    case "yarn"
+        deps.splice(0,0,"add")
+        deps.splice(deps.length,0,"-D")
+    case "npm"
+        deps.splice(0,0,"install")
+        deps.splice(deps.length,0,"--save-dev")
+    case "pnpm"
+        deps.splice(0,0,"install")
+        deps.splice(deps.length,0,"-d")
+    runOut(pm,...deps)
+
+export function tsLintTask
+    # npx eslint . --ext .js,.jsx,.ts,.tsx
+    ## see https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/README.md
+
+    installTask \@typescript-eslint/parser,\@typescript-eslint/eslint-plugin
+    eslintignore = """
+    don't ever lint node_modules
+    node_modules
+    # don't lint build output (make sure it's set to your correct build folder name)
+    dist
+    # don't lint nyc coverage output
+    coverage
+    """
+    fs.writeFileSync path.join(cwd,\.eslintignore),eslintignore
+    rc = require "../src/eslintrc"
+    fs.writeFileSync path.join(cwd,\.eslintrc.js),"module.exports = #{JSON.stringify rc,null,4}"
+    # use airbnb
+    # installTask \airbnb-typescript
+    # rc.extends = rc.extends |> reject (x) -> x in [ 'eslint:recommended', 'plugin:@typescript-eslint/recommended' ]
+    # rc.extends.push \airbnb-typescript
+
+    # use prettier
+    # rc.extends.push \prettier/@typescript-eslint
+ 
 export applybadges = ->
     if fs.existsSync readme
         pkg = require path.join(cwd,"package.json")
@@ -63,7 +150,7 @@ export applybadges = ->
         fs.writeFileSync(readme,content)
 
 function ignores
-    result = ["*.json","*.md"]
+    result = ["*.json","*.md","*.lock"]
     dotgitignores = path.join(cwd,".gitignore")
     dotnpmignores = path.join(cwd,".npmignore")
     gitignores = parse dotgitignores if fs.existsSync dotgitignores
@@ -84,5 +171,3 @@ function countMap  (arr)
 
 function sourceFilesOrdered 
      Object.entries (countMap files!) .sort (a,b) -> b[1] - a[1]
-
-applybadges!
