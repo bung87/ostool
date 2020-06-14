@@ -1,7 +1,14 @@
+require! {
+  process
+  fs
+  path
+}
+
 const {whichPm} = require "./pm"
 const { compile } = require "./template"
 
-class Task
+export class Task
+    cwd:process.cwd!
     installTask: (...deps) ->
         pm = whichPm!
         switch pm
@@ -38,3 +45,8 @@ class Task
     
     copyFile: (src,des) ->
         fs.createReadStream(path.join __dirname,src ).pipe(fs.createWriteStream( path.join @cwd,dest ))
+
+    renderTo: (dest,tpl,ctx) ->
+        tmp = fs.readFileSync(path.join __dirname,tpl).toString!
+        render = compile tmp
+        fs.writeFileSync path.resolve(@cwd,dest),render(ctx)
