@@ -19,54 +19,54 @@ vsTrending = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/t
 )](https://marketplace.visualstudio.com/items?itemName=#{publisher}.#{extname})"
 
 export function vsExtBadges
-    badges = 
-        vsVersion publisher,extname
-        vsInstalls publisher,extname
-        vsRating publisher,extname
-        vsTrending publisher,extname
+  badges = 
+    vsVersion publisher,extname
+    vsInstalls publisher,extname
+    vsRating publisher,extname
+    vsTrending publisher,extname
 
 export function nodeBadges
-    badges = 
-        buildStatus username,repo
-        (if lgtmNotSupport.includes primary == false
-        then  lgtmAlert username,repo
-        )
-        (if lgtmNotSupport.includes primary == false
-        then  lgtmGrade username,repo
-        )
-        npmVersion pkgName
-        npmDownloads pkgName
-        (if primary == ".ts" 
-            then types pkgName
-        )
-        deps username,repo
-        license pkgName
+  badges = 
+    buildStatus username,repo
+    (if lgtmNotSupport.includes primary == false
+    then  lgtmAlert username,repo
+    )
+    (if lgtmNotSupport.includes primary == false
+    then  lgtmGrade username,repo
+    )
+    npmVersion pkgName
+    npmDownloads pkgName
+    (if primary == ".ts" 
+      then types pkgName
+    )
+    deps username,repo
+    license pkgName
 
 export applybadges = (badges) ->
-    if fs.existsSync readme
-        pkg = require path.join cwd,\package.json
-        username = pkg.author
-        repo = if typeof pkg.repository == "object"
-            then 
-                path.basename(pkg.repository.url)  
-            else if typeof pkg.repository == "string"
-                path.basename(pkg.repository)
-            else
-                pkg.name
-        pkgName =  pkg.name
-        origin = fs.readFileSync readme .toString!
-        i = 0
-        len = origin.length
-        while i < len
-            if origin[i] == "\n" or origin[i] == "["  or origin[i] == "!"
-                break
-            ++i
-        
-        bs = []
-        # j = 0
-        for badge in badges.filter( (x) -> x )
-            if (origin .indexOf badge) == -1
-                # j += badge.length
-                bs .push badge
-        content =  origin.substring(0, i) + bs.join(" ") + origin.substring(i, origin.length)
-        fs.writeFileSync(readme,content)
+  if fs.existsSync readme
+    pkg = require path.join cwd,\package.json
+    username = pkg.author
+    repo = if typeof pkg.repository == "object"
+      then 
+        path.basename(pkg.repository.url)  
+      else if typeof pkg.repository == "string"
+        path.basename(pkg.repository)
+      else
+        pkg.name
+    pkgName =  pkg.name
+    origin = fs.readFileSync readme .toString!
+    i = 0
+    len = origin.length
+    while i < len
+      if origin[i] == "\n" or origin[i] == "["  or origin[i] == "!"
+        break
+      ++i
+    
+    bs = []
+    # j = 0
+    for badge in badges.filter( (x) -> x )
+      if (origin .indexOf badge) == -1
+        # j += badge.length
+        bs .push badge
+    content =  origin.substring(0, i) + bs.join(" ") + origin.substring(i, origin.length)
+    fs.writeFileSync(readme,content)
