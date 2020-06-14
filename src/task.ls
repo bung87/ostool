@@ -50,3 +50,6 @@ export class Task
         tmp = fs.readFileSync(path.join __dirname,tpl).toString!
         render = compile tmp
         fs.writeFileSync path.resolve(@cwd,dest),render(ctx)
+
+    writeTo: (dest,ctn) ->
+        fs.writeFileSync path.resolve(@cwd,dest),ctn
