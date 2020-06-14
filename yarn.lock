@@ -156,6 +156,11 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
+universal-diff@^2.0.2:
+  version "2.0.2"
+  resolved "https://r.cnpmjs.org/universal-diff/download/universal-diff-2.0.2.tgz#d1477f53b314613d6835716746cf4ec113127a1e"
+  integrity sha1-0Ud/U7MUYT1oNXFnRs9OwRMSeh4=
+
 word-wrap@~1.2.3:
   version "1.2.3"
   resolved "https://r.cnpmjs.org/word-wrap/download/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
