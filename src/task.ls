@@ -2,10 +2,11 @@ require! {
   process
   fs
   path
+  "./std/io":{ writeFile, readFile, exists }
 }
 
-const {whichPm} = require "./pm"
-const { compile } = require "./template"
+{ whichPm } = require "./pm"
+{ compile } = require "./template"
 
 export class Task
   cwd:process.cwd!
@@ -24,12 +25,12 @@ export class Task
     runOut(pm,...deps)
   
   mergeWith: (dest,content) ->
-    if fs.existsSync dest
-      origin = fs.readFileSync dest .toString!
+    if exists dest
+      origin = readFile dest 
       cnt = mergeStr origin, content
-      fs.writeFileSync dest,cnt
+      writeFile dest,cnt
     else
-      fs.writeFileSync dest,content
+      writeFile dest,content
   
   cleanTask: ->
     pkg = require path.join cwd,\package.json
@@ -47,9 +48,9 @@ export class Task
     fs.createReadStream(path.join __dirname,src ).pipe(fs.createWriteStream( path.join @cwd,dest ))
 
   renderTo: (dest,tpl,ctx) ->
-    tmp = fs.readFileSync(path.join __dirname,tpl).toString!
+    tmp = readFile(path.join __dirname,tpl)
     render = compile tmp
-    fs.writeFileSync path.resolve(@cwd,dest),render(ctx)
+    writeFile path.resolve(@cwd,dest),render(ctx)
 
   writeTo: (dest,ctn) ->
-    fs.writeFileSync path.resolve(@cwd,dest),ctn
+    writeFile path.resolve(@cwd,dest),ctn

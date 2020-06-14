@@ -4,6 +4,7 @@ require! {
   process
   glob
   "gitignore-globs": parse
+  "./std/io":{ exists }
 }
 
 
@@ -15,31 +16,31 @@ export class Context
     @isVscodeExt = @isVscodeExt!
   
   isJsEcosystem: ->
-    fs.existsSync path.join @cwd,\package.json
+    exists path.join @cwd, \package.json
   
   isVscodeExt: ->
-    pkg = require path.join @cwd,\package.json
+    pkg = require path.join @cwd, \package.json
     \engines of pkg and \vscode of pkg.engines
 
-function ignores (cwd)
+ignores = (cwd) ->
   result = ["*.json","*.md","*.lock"]
-  dotgitignores = path.join cwd,".gitignore"
-  dotnpmignores = path.join cwd,".npmignore"
-  gitignores = parse dotgitignores if fs.existsSync dotgitignores
-  npmignores = parse dotnpmignores if fs.existsSync dotnpmignores
-  result = result ++ gitignores if gitignores
-  result = result ++ npmignores if npmignores
+  dotgitignores = path.join cwd, ".gitignore"
+  dotnpmignores = path.join cwd, ".npmignore"
+  gitignores = parse dotgitignores if exists? dotgitignores
+  npmignores = parse dotnpmignores if exists? dotnpmignores
+  result = result ++ that if gitignores
+  result = result ++ that if npmignores
   return result
 
-function files (cwd)
-  glob.sync "**", ignore:ignores cwd, cwd:cwd, nodir:true
+files = (cwd) ->
+  glob.sync "**", ignore:ignores cwd, cwd: cwd, nodir: true
 
-function countMap  (arr)
+countMap = (arr)  ->
   arr.reduce( (countMap, word) -> 
     ext = path.extname(word)
     countMap[ext] = ++countMap[ext] || 1
     return countMap
   , {})
 
-function sourceFilesOrdered (cwd)
+sourceFilesOrdered = (cwd) ->
   Object.entries (countMap files cwd) .sort (a,b) -> b[1] - a[1]

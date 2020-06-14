@@ -12,17 +12,17 @@ const { mergeStr } = require 'universal-diff'
 # const _ = require 'prelude-ls'
 
 const cwd = process .cwd!
-const readme = path.join cwd,\README.md
+const readme = path.join cwd, \README.md
 
-export function runOut (cmd,...args)
+export runOut = (cmd,...args) ->
   spawn(cmd, args, stdio: \inherit )
 
-export function runIn (cmd,...args)
+export runIn = (cmd,...args) ->
   child = spawnSync(cmd, args, stdio: \pipe )
   child.stdout?.toString!.trim!
 
 
-export function tsLintTask
+export tsLintTask = ->
   # npx eslint . --ext .js,.jsx,.ts,.tsx
   ## see https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/README.md
 

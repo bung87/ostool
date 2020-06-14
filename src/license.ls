@@ -2,7 +2,7 @@
 
 export getLicense
 
-export function maxLine (content)
+export maxLine = (content) ->
   j = 0
   _maxLine = (p,c,i) -> 
     if c.includes "\n"

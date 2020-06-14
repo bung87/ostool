@@ -2,20 +2,20 @@ require! {
   fs
   path
   process
+  "./std/io":{ exists }
 }
 
 const cwd = process .cwd!
+useYarn = ->
+  exists path.join cwd, \yarn.lock
 
-function useYarn
-  fs.existsSync path.join cwd,\yarn.lock
+useNpm = ->
+  exists path.join cwd, \package-lock.json
 
-function useNpm 
-  fs.existsSync path.join cwd,\package-lock.json
-  
-function usePnpm
-  fs.existsSync path.join cwd,\pnpm-lock.yaml
+usePnpm = ->
+  exists path.join cwd, \pnpm-lock.yaml
 
-export function whichPm
+export whichPm = ->
   ## find which package manager be used (result cached)
   if not whichPm.result
     switch

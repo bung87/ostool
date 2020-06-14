@@ -18,14 +18,14 @@ vsRating = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/rat
 vsTrending = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/trending-monthly/#{publisher}.#{extname}.svg
 )](https://marketplace.visualstudio.com/items?itemName=#{publisher}.#{extname})"
 
-export function vsExtBadges
+export vsExtBadges = ->
   badges = 
     vsVersion publisher,extname
     vsInstalls publisher,extname
     vsRating publisher,extname
     vsTrending publisher,extname
 
-export function nodeBadges
+export nodeBadges = ->
   badges = 
     buildStatus username,repo
     (if lgtmNotSupport.includes primary == false
@@ -54,7 +54,7 @@ export applybadges = (badges) ->
       else
         pkg.name
     pkgName =  pkg.name
-    origin = fs.readFileSync readme .toString!
+    origin = fs.readFileSync readme
     i = 0
     len = origin.length
     while i < len
