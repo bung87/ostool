@@ -1,4 +1,6 @@
 const {whichPm} = require "./pm"
+const { compile } = require "./template"
+
 class Task
     installTask: (...deps) ->
         pm = whichPm!

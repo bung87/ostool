@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "lsc -wco dist src",
     "build": "lsc -co dist src",
-    "test": "lsc tests/*"
+    "test": "lsc tests"
   },
   "files": [
     "dist"
@@ -19,6 +19,7 @@
   "dependencies": {
     "gitignore-globs": "^0.1.1",
     "glob": "^7.1.6",
+    "handlebars": "^4.7.6",
     "prelude": "^0.8.2",
     "rimraf": "^3.0.2",
     "universal-diff": "^2.0.2"
