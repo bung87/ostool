@@ -4,12 +4,11 @@ require! {
   glob
   rimraf
   process
+  'universal-diff':{ mergeStr } 
+  'child_process':{ spawnSync,spawn }
+  'gitignore-globs':parse
+  'prelude-ls':{reject,union}
 }
-const {reject,union} = require 'prelude-ls'
-const parse = require 'gitignore-globs'
-const { spawnSync,spawn } = require 'child_process'
-const { mergeStr } = require 'universal-diff'
-# const _ = require 'prelude-ls'
 
 const cwd = process .cwd!
 const readme = path.join cwd, \README.md

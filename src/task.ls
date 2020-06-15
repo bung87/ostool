@@ -8,6 +8,7 @@ require! {
   "./template":{ compile } 
   'prelude-ls':{ map,join,tail }
   'is-ci':isCI
+  'universal-diff':{ mergeStr,compareStr } 
 }
 
 warning = chalk.keyword('yellow')
@@ -40,7 +41,7 @@ handler =
           ret
         else
           log warning "[ ] #{sentence}"
-          that! if (!isCI and !process.stdout.isTTY) and obj[prop].prompt
+          that! if (!isCI and process.stdout.isTTY) and obj[prop].prompt
 
           ret
     else
@@ -66,7 +67,8 @@ export class Task
   mergeWith: (dest,content) ->
     if exists dest
       origin = readFile dest 
-      cnt = mergeStr origin, content
+      ret = compareStr origin, content
+      cnt = mergeStr origin, ret
       writeFile dest,cnt
     else
       writeFile dest,content

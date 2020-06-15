@@ -2,7 +2,8 @@ require! {
   path
   "./task":{ Task }
   "./std/io":{ exists, readFile }
-  "../src/context": { Context }
+  "./context": { Context }
+  "./readme": { ReadMeTask }
   glob
   inquirer
 }
@@ -44,20 +45,19 @@ export class HealthTask extends Task
             hasTest = yes
         return hasBuild and hasWatch and hasTest
   checkReadmeHasInstallation: ->
-    ::checkReadmeHasInstallation.prompt ?= ->
+    ::checkReadmeHasInstallation.prompt ?= ~>
         inquirer
         .prompt([
             type: \confirm
             name: "hasInstallation"
             message: "Readme has no Installatio section, would you like to?"
-            # choices:[yes,no]
         ])
-        .then (answers) ->
+        .then (answers) ~>
             # Use user feedback for... whatever!!
             console.log answers
             if answers.hasInstallation
-              ...
-        .catch (error) -> 
+              ReadMeTask::gen ...
+        .catch (error) ~> 
             if (error.isTtyError) 
             # Prompt couldn't be rendered in the current environment
                 ...
