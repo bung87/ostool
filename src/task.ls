@@ -2,14 +2,48 @@ require! {
   process
   fs
   path
+  chalk
   "./std/io":{ writeFile, readFile, exists }
+  "./pm":{ whichPm } 
+  "./template":{ compile } 
+  'prelude-ls':{ map,join,tail }
 }
 
-{ whichPm } = require "./pm"
-{ compile } = require "./template"
+warning = chalk.keyword('yellow')
+success = chalk.keyword('green')
+alert = chalk.keyword('red')
+log = console.log
+
+changeCase = (v) ->
+  if /^[A-Z]+$/ is v
+    v
+  else
+    v.toLowerCase!
+
+camelCase2sentence = (v) ->
+  v = v.replace(/([A-Z][a-z0-9]+)/, ' $1 ') .replace(/\s{2}/," ").trim().split(" ")
+    |> map changeCase
+    |> join " "
+  v = v[0].toUpperCase! + v.substring 1 
+
+handler = 
+  get: (obj, prop) ->
+    if prop.startsWith \check
+      sentence = prop |> camelCase2sentence
+      return ->
+        ret = obj[prop] ...
+        if (ret)
+          log success "[✓] #{sentence}"
+          ret
+        else
+          log warning "[ ] #{sentence}"
+          ret
+    else
+      obj[prop]
 
 export class Task
   cwd:process.cwd!
+  -> return new Proxy(@, handler)
   installTask: (...deps) ->
     pm = whichPm!
     switch pm
@@ -54,3 +88,13 @@ export class Task
 
   writeTo: (dest,ctn) ->
     writeFile path.resolve(@cwd,dest),ctn
+
+  # printMethods: ->
+  #   try
+  #     for let key, value of @ 
+  #       when key of super?:: == false
+  #         console.log key,value
+  printMethods: ->
+    for let key, value of @ 
+      when key of Task:: == false and typeof value == "function"
+        console.log key,value

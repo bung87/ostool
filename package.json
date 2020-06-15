@@ -17,6 +17,7 @@
     "livescript": "^1.6.0"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "gitignore-globs": "^0.1.1",
     "glob": "^7.1.6",
     "handlebars": "^4.7.6",

@@ -1,4 +1,4 @@
-const assert = require 'assert' .strict
+assert = require 'assert' .strict
 
 {whichPm} = require "../src/pm"
 

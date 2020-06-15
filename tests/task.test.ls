@@ -2,10 +2,10 @@ require! {
   process
   fs
   path
+  "../src/context": { Context }
+  "../src/task": { Task }
+  'assert': { strict:assert }
 }
-const assert = require 'assert' .strict
-{Task} = require "../src/task"
-{Context} = require "../src/context"
 
 ctx = new Context process.cwd!
 task = new Task <<< ctx
