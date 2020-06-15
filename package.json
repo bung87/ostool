@@ -25,6 +25,7 @@
     "gitignore-globs": "^0.1.1",
     "glob": "^7.1.6",
     "handlebars": "^4.7.6",
+    "inquirer": "^7.2.0",
     "license": "^1.0.3",
     "node-text-chunk": "^0.1.1",
     "prelude": "^0.8.2",

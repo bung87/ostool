@@ -21,7 +21,7 @@ changeCase = (v) ->
     v.toLowerCase!
 
 camelCase2sentence = (v) ->
-  v = v.replace(/([A-Z][a-z0-9]+)/, ' $1 ') .replace(/\s{2}/," ").trim().split(" ")
+  v = v.replace(/([A-Z][a-z0-9]+)/g, ' $1 ') .replace(/\s{2}/g," ").trim().split(" ")
     |> map changeCase
     |> join " "
   v = v[0].toUpperCase! + v.substring 1 
@@ -32,11 +32,15 @@ handler =
       sentence = prop |> camelCase2sentence
       return ->
         ret = obj[prop] ...
+        if prop.startsWith \checkHas
+          obj[ \has + prop.substring(\checkHas .length )] = ret
         if (ret)
           log success "[✓] #{sentence}"
           ret
         else
           log warning "[ ] #{sentence}"
+          that! if obj[prop].prompt
+
           ret
     else
       obj[prop]

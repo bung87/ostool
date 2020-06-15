@@ -1,9 +1,10 @@
 require! {
   path
   "./task":{ Task }
-  "./std/io":{ exists }
+  "./std/io":{ exists, readFile }
   "../src/context": { Context }
   glob
+  inquirer
 }
 
 export class HealthTask extends Task
@@ -31,14 +32,41 @@ export class HealthTask extends Task
   checkScripts: ->
     if @isJsEcosystem
         pkg = require path.join(@cwd,"package.json")
-        hasBuild = false
-        hasWatch = false
-        hasTest = false
+        hasBuild = no
+        hasWatch = no
+        hasTest = no
         for key,val of pkg.scripts
           if key == "watch" and val.length > 0
-            hasWatch = true
+            hasWatch = yes
           else if key == "build" and val.length > 0
-            hasBuild = true
+            hasBuild = yes
           else if key == "test" and val.length > 0
-            hasTest = true
+            hasTest = yes
         return hasBuild and hasWatch and hasTest
+  checkReadmeHasInstallation: ->
+    ::checkReadmeHasInstallation.prompt ?= ->
+        inquirer
+        .prompt([
+            type: \confirm
+            name: "hasInstallation"
+            message: "Readme has no Installatio section, would you like to?"
+            # choices:[yes,no]
+        ])
+        .then (answers) ->
+            # Use user feedback for... whatever!!
+            console.log answers
+            if answers.hasInstallation
+              ...
+        .catch (error) -> 
+            if (error.isTtyError) 
+            # Prompt couldn't be rendered in the current environment
+                ...
+            else 
+            # Something else when wrong
+                console.error error
+
+    hasReadme = no
+    if @hasReadme
+      readme = readFile path.join @cwd,\README.md
+      if /#+ Installation/i is readme
+        hasReadme = yes
