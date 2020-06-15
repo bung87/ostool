@@ -1,4 +1,7 @@
+env:
+  - CONTINUOUS_INTEGRATION=false
 language: node_js
+
 node_js:
   - 'node' # use latest stable nodejs version
 script:
