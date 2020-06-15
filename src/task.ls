@@ -7,6 +7,7 @@ require! {
   "./pm":{ whichPm } 
   "./template":{ compile } 
   'prelude-ls':{ map,join,tail }
+  'is-ci':isCI
 }
 
 warning = chalk.keyword('yellow')
@@ -39,7 +40,7 @@ handler =
           ret
         else
           log warning "[ ] #{sentence}"
-          that! if obj[prop].prompt
+          that! if (!isCI and !process.stdout.isTTY) and obj[prop].prompt
 
           ret
     else
