@@ -8,6 +8,10 @@
     "build": "lsc -co dist src",
     "test": "lsc tests"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bung87/ostool.git"
+  },
   "files": [
     "dist"
   ],

@@ -8,6 +8,20 @@ require! {
 
 export class HealthTask extends Task
   -> return super ...
+  checkMetaInfo: ->
+    conds = []
+    if @isJsEcosystem
+        pkg = require path.join(@cwd,"package.json")
+        hasName = "name" of pkg
+        hasAuthor = "author" of pkg
+        hasLicence = "license" of pkg
+        hasRepository = "repository" of pkg
+        conds.push hasName,hasAuthor,hasLicence,hasRepository
+        if @isVscodeExt
+          publisher = "publisher" of pkg
+          conds.push publisher
+    conds.every (v) -> v == true
+
   checkHasReadme: -> 
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
     len = glob.sync "README.*",cwd:@cwd .length
