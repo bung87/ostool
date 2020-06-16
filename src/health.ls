@@ -169,7 +169,7 @@ HealthTask::checkHas-pre-commit-hook.prompt ?= ->>
       @installTask \husky
       pkg = require @proj \package.json
       if \husky of pkg == false
-        pkg.husky = {"pre-commit": "npm test"}
+        pkg.husky = hooks:{"pre-commit": "npm test"}
         @writeJSON (@proj \package.json),pkg
 
 export HealthTask 
