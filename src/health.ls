@@ -4,9 +4,13 @@ require! {
   "./std/io":{ exists, readFile }
   "./context": { Context }
   "./readme": { ReadMeTask }
+  "./license":{getLicense, maxLine}
   glob
   inquirer
 }
+
+inquirer.registerPrompt("search-list", require("inquirer-search-list"))
+const licenseList = Array.from require("@ovyerus/licenses/simple")
 
 export class HealthTask extends Task
   -> return super ...
@@ -28,7 +32,38 @@ export class HealthTask extends Task
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
     len = glob.sync "README.*",cwd:@cwd .length
     len == 1
-  checkHasLicense: -> exists @proj \LICENSE
+  checkHasLicense: -> 
+    ::checkHasLicense.prompt ?= ~>>
+      inquirer
+      .prompt([
+        type: \confirm
+        name: "addLicense"
+        message: "would you like to create one?"
+      ])
+      .then (answers) ~>>
+        if answers.addLicense
+          inquirer
+          .prompt([
+            * type: "search-list",
+              message: "Select License",
+              name: "License",
+              choices: licenseList,
+            * type: "input",
+              message: "Your name in License",
+              name: "name"
+          ])
+          .then (answers) ~>
+            content = getLicense answers.License, author: answers.name, year: new Date().getFullYear!
+            content = maxLine content
+            @writeTo  \LICENSE,content
+      .catch (error) ~> 
+        if (error.isTtyError) 
+          # Prompt couldn't be rendered in the current environment
+            ...
+        else 
+          # Something else when wrong
+          console.error error
+    exists @proj \LICENSE
   checkHasCI: -> exists @proj \.travis.yml
   checkScripts: ->
     if @isJsEcosystem

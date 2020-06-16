@@ -36,18 +36,19 @@ handler =
         ret = obj[prop] ...
         if prop.startsWith \checkHas
           obj[ \has + prop.substring(\checkHas .length )] = ret
-        if (ret)
-          log success "[✓] #{sentence}"
-          ret
-        else
-          log warning "[ ] #{sentence}"
-          that! if (!isCI and process.stdout.isTTY) and obj[prop].prompt
-
+        if typeof ret == "boolean"
+          if (ret)
+            log success "[✓] #{sentence}"
+            ret
+          else
+            log warning "[ ] #{sentence}"
+            obj.taskQueue.push that if (!isCI and process.stdout.isTTY) and obj[prop].prompt
           ret
     else
       obj[prop]
 
 export class Task
+  taskQueue:[]
   cwd:process.cwd!
   -> return new Proxy(@, handler)
   installTask: (...deps) ->
@@ -117,7 +118,9 @@ export class Task
       when key of Task:: == false and typeof value == "function"
         console.log key,value
 
-  process: ->
+  process: !->
     for let key, value of @ 
       when key of Task:: == false and typeof value == "function"
         value ...
+    for func in @taskQueue
+      func ...

@@ -26,6 +26,7 @@
     "glob": "^7.1.6",
     "handlebars": "^4.7.6",
     "inquirer": "^7.2.0",
+    "inquirer-search-list": "^1.2.6",
     "is-ci": "^2.0.0",
     "license": "^1.0.3",
     "node-text-chunk": "^0.1.1",
