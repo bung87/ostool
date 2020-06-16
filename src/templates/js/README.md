@@ -2,8 +2,8 @@
 
 ## Installation
 
-`yarn add  {{ projectName }}`  
+`yarn add {{ projectName }}`  
 
 or  
 
-`npm i --save  {{ projectName }}`  
+`npm i --save {{ projectName }}`  

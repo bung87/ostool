@@ -1,11 +1,12 @@
 {
   "name": "ostool",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "open source project tool",
+  "main": "dist/index.js",
   "scripts": {
     "watch": "lsc -wco dist src",
-    "build": "lsc -co dist src",
+    "build": "lsc -co dist src && cp -r src/templates dist/templates",
+    "prepublishOnly": "npm run build",
     "test": "lsc tests"
   },
   "repository": {
@@ -15,6 +16,9 @@
   "files": [
     "dist"
   ],
+  "bin":{
+    "ostool":"dist/cli"
+  },
   "author": "bung87",
   "license": "MIT",
   "devDependencies": {

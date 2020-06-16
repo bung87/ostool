@@ -2,8 +2,24 @@
 
 ## Installation
 
-`yarn add  ostool`  
+`yarn add ostool -D`  
 
 or  
 
-`npm i --save  ostool`  
+`npm i --save-dev ostool`  
+
+## Usage  
+
+health check  
+
+`ostool health`  
+``` sh
+[✓] Check meta info
+[✓] Check has readme
+[ ] Check has license
+[✓] Check has CI
+? would you like to create one? Yes
+? Select License MIT
+? Your name in License bung
+```
+
