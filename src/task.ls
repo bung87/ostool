@@ -9,6 +9,7 @@ require! {
   'prelude-ls':{ map,join,tail }
   'is-ci':isCI
   'universal-diff':{ mergeStr,compareStr } 
+  "./std/process": { runOut,runIn}
 }
 
 warning = chalk.keyword('yellow')
@@ -55,14 +56,14 @@ export class Task
     pm = whichPm @cwd
     switch pm
     case "yarn"
-      deps unshift \add
-      deps push \-D
+      deps .unshift \add
+      deps .push \-D
     case "npm"
-      deps unshift \install
-      deps push \--save-dev
+      deps .unshift \install
+      deps .push \--save-dev
     case "pnpm"
-      deps unshift \install
-      deps push \-d
+      deps .unshift \install
+      deps .push \-d
     runOut(pm,...deps)
   
   mergeWith: (dest,content) ->
@@ -75,7 +76,7 @@ export class Task
       writeFile dest,content
   
   cleanTask: ->
-    pkg = require path.join cwd,\package.json
+    pkg = require @proj \package.json
     # tsconfig = require path.join cwd,\tsconfig.json
     # outDIr = tsconfig.compilerOptions.outDir
     if "files" of pkg
@@ -100,14 +101,19 @@ export class Task
     render = compile(_tpl)
     render ctx
     
-  tpl:(name)->
-    path.join __dirname,"templates",name
+  tpl:(...args)->
+    p = path.join ...args
+    path.join __dirname,"templates",p
 
-  proj:(name) ->
-    path.join @cwd,name
+  proj:(...args) ->
+    p = path.join ...args
+    path.join @cwd,p
+
   writeTo: (dest,ctn) ->
     writeFile path.resolve(@cwd,dest),ctn
 
+  writeJSON:(dest,obj) ->
+    writeFile path.resolve(@cwd,dest),JSON.stringify(obj,null,4)
   # printMethods: ->
   #   try
   #     for let key, value of @ 

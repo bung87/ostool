@@ -13,12 +13,7 @@ require! {
 const cwd = process .cwd!
 const readme = path.join cwd, \README.md
 
-export runOut = (cmd,...args) ->
-  spawn(cmd, args, stdio: \inherit )
 
-export runIn = (cmd,...args) ->
-  child = spawnSync(cmd, args, stdio: \pipe )
-  child.stdout?.toString!.trim!
 
 
 export tsLintTask = ->

@@ -1,42 +1,46 @@
 {
-  "name": "ostool",
-  "version": "1.0.0",
-  "description": "open source project tool",
-  "main": "dist/index.js",
-  "scripts": {
-    "watch": "lsc -wco dist src",
-    "build": "lsc -co dist src && cp -r src/templates dist/templates",
-    "prepublishOnly": "npm run build",
-    "test": "lsc tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bung87/ostool.git"
-  },
-  "files": [
-    "dist"
-  ],
-  "bin":{
-    "ostool":"dist/cli"
-  },
-  "author": "bung87",
-  "license": "MIT",
-  "devDependencies": {
-    "livescript": "^1.6.0"
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "gitignore-globs": "^0.1.1",
-    "glob": "^7.1.6",
-    "handlebars": "^4.7.6",
-    "inquirer": "^7.2.0",
-    "inquirer-search-list": "^1.2.6",
-    "is-ci": "^2.0.0",
-    "license": "^1.0.3",
-    "node-text-chunk": "^0.1.1",
-    "prelude": "^0.8.2",
-    "rimraf": "^3.0.2",
-    "universal-diff": "^2.0.2",
-    "yargs": "^15.3.1"
-  }
+    "name": "ostool",
+    "version": "1.0.0",
+    "description": "open source project tool",
+    "main": "dist/index.js",
+    "scripts": {
+        "watch": "lsc -wco dist src",
+        "build": "lsc -co dist src && cp -r src/templates dist/templates",
+        "prepublishOnly": "npm run build",
+        "test": "lsc tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bung87/ostool.git"
+    },
+    "files": [
+        "dist"
+    ],
+    "bin": {
+        "ostool": "dist/cli"
+    },
+    "author": "bung87",
+    "license": "MIT",
+    "devDependencies": {
+        "husky": "^4.2.5",
+        "livescript": "^1.6.0"
+    },
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "gitignore-globs": "^0.1.1",
+        "glob": "^7.1.6",
+        "handlebars": "^4.7.6",
+        "inquirer": "^7.2.0",
+        "inquirer-search-list": "^1.2.6",
+        "is-ci": "^2.0.0",
+        "license": "^1.0.3",
+        "node-text-chunk": "^0.1.1",
+        "prelude": "^0.8.2",
+        "rimraf": "^3.0.2",
+        "universal-diff": "^2.0.2",
+        "yargs": "^15.3.1"
+    },
+    "husky": {
+        "pre-commit": "npm test"
+    }
 }
