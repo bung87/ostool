@@ -116,8 +116,8 @@ export class Task
     for let key, value of @ 
       when key of Task:: == false and typeof value == "function"
         console.log key,value
+
   process: ->
     for let key, value of @ 
-      console.log key,value
       when key of Task:: == false and typeof value == "function"
         value ...
