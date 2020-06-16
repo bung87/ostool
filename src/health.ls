@@ -63,7 +63,7 @@ class HealthTask extends Task
       hasSetup = exists @proj \setup.py
   
   checkHas-pre-commit-hook: ->
-    exists @proj \.git,\pre-commit
+    exists @proj \.git,\hooks,\pre-commit
 
 HealthTask::checkHasLicense.prompt ?= ->>
   inquirer
