@@ -44,19 +44,19 @@ export class HealthTask extends Task
         else if key == "test" and val.length > 0
           hasTest = yes
       return hasBuild and hasWatch and hasTest
-  checkReadmeHasInstallation: ->
-    ::checkReadmeHasInstallation.prompt ?= ~>
+  checkReadmeHasInstallation: ->>
+    ::checkReadmeHasInstallation.prompt ?= ~>>
       inquirer
       .prompt([
         type: \confirm
         name: "hasInstallation"
         message: "Readme has no Installatio section, would you like to?"
       ])
-      .then (answers) ~>
+      .then (answers) ~>>
         # Use user feedback for... whatever!!
         console.log answers
         if answers.hasInstallation
-          ReadMeTask::gen ...
+          await ReadMeTask::gen ...
       .catch (error) ~> 
           if (error.isTtyError) 
             # Prompt couldn't be rendered in the current environment
@@ -70,8 +70,8 @@ export class HealthTask extends Task
       readme = readFile @proj \README.md
       if /#+ Installation/i is readme
         hasReadme = yes
-  checkHasSetup: ->
-    ::checkHasSetup.prompt ?= ~>
+  checkHasSetup: ->>
+    ::checkHasSetup.prompt ?= ~>>
       inquirer
       .prompt([
         type: \confirm

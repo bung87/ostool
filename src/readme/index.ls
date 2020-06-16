@@ -12,7 +12,7 @@ require! {
 export class ReadMeTask extends Task
   -> return super ...
 
-  badges: -> 
+  badges: ->> 
     readmePath = @proj \README.md
     primary = @primaryLang
     if exists readmePath
@@ -41,16 +41,43 @@ export class ReadMeTask extends Task
         # pkgName 
         # setup(
         #   name='bixin',
-        _badges = pybadges pkgName,username,repo
+        @answers ?= await inquirer
+        .prompt(
+          * type:\input
+            name:"pkgName"
+            message:"package name"
+          * type:\input
+            name: "travisUsername"
+            message:"travis username"
+          * repo:\input
+            name:"repoUri"
+            message:"repository uri"
+        )
+        _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
         _badges.filter( (x) -> x ).join " "
 
-  gen: ->
+  gen: ->>
     if @isJsEcosystem
       pkg = require @proj \package.json
       readmePath = @proj \README.md
-      tpl =  @tpl \README.md
+      tpl =  @tpl << path.join \js,\README.md
       # .badges might called by other context
-      content = @render tpl,projectName: pkg.name, badges: ReadMeTask::badges ... 
+      content = @render tpl,projectName: pkg.name, badges: await ReadMeTask::badges ... 
       @mergeWith readmePath,content
     else if @isPyEcosystem
-      ...
+      readmePath = @proj \README.md
+      tpl =  @tpl << path.join \py,\README.md
+      @answers ?= await inquirer
+        .prompt(
+          * type:\input
+            name:"pkgName"
+            message:"package name"
+          * type:\input
+            name: "travisUsername"
+            message:"travis username"
+          * repo:\input
+            name:"repoUri"
+            message:"repository uri"
+        )
+      content = @render tpl,projectName: @answers.pkgName, badges: await ReadMeTask::badges ... 
+      @mergeWith readmePath,content
