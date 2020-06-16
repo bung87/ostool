@@ -15,8 +15,8 @@ const licenseList = Array.from require("@ovyerus/licenses/simple")
 export class HealthTask extends Task
   -> return super ...
   checkMetaInfo: ->
-    conds = []
     if @isJsEcosystem
+      conds = []
       pkg = require path.join(@cwd,"package.json")
       hasName = "name" of pkg
       hasAuthor = "author" of pkg
@@ -26,7 +26,7 @@ export class HealthTask extends Task
       if @isVscodeExt
         publisher = "publisher" of pkg
         conds.push publisher
-    conds.every (v) -> v == true
+      conds.every (v) -> v == true
 
   checkHasReadme: -> 
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
@@ -79,7 +79,7 @@ export class HealthTask extends Task
         else if key == "test" and val.length > 0
           hasTest = yes
       return hasBuild and hasWatch and hasTest
-  checkReadmeHasInstallation: ->>
+  checkReadmeHasInstallation: ->
     ::checkReadmeHasInstallation.prompt ?= ~>>
       inquirer
       .prompt([
@@ -105,7 +105,7 @@ export class HealthTask extends Task
       readme = readFile @proj \README.md
       if /#+ Installation/i is readme
         hasReadme = yes
-  checkHasSetup: ->>
+  checkHasSetup: ->
     ::checkHasSetup.prompt ?= ~>>
       inquirer
       .prompt([

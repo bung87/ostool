@@ -32,7 +32,7 @@ export class Context
     @primaryLang == ".py"
 
 ignores = (cwd) ->
-  result = ["*.json","*.md","*.lock"]
+  result = ["**/*.json","**/*.md","**/*.lock","**/*.txt","**/*.gz","**/*.cfg","**/*.ini"]
   dotgitignores = path.join cwd, ".gitignore"
   dotnpmignores = path.join cwd, ".npmignore"
   gitignores = parse dotgitignores if exists? dotgitignores
@@ -42,7 +42,7 @@ ignores = (cwd) ->
   return result
 
 files = (cwd) ->
-  glob.sync "**", ignore:ignores cwd, cwd: cwd, nodir: true
+  glob.sync "**", ignore:(ignores cwd), cwd: cwd, nodir: true
 
 countMap = (arr)  ->
   arr.reduce( (countMap, word) -> 
