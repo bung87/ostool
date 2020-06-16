@@ -1,4 +1,4 @@
-# {{ projectName }} {{ badges }}  
+# {{ projectName }} {{& badges }}  
 
 ## Installation
 

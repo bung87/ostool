@@ -28,11 +28,11 @@ export class HealthTask extends Task
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
     len = glob.sync "README.*",cwd:@cwd .length
     len == 1
-  checkHasLicense: -> exists path.join @cwd,\LICENSE
-  checkHasCI: -> exists path.join @cwd,\.travis.yml
+  checkHasLicense: -> exists @proj \LICENSE
+  checkHasCI: -> exists @proj \.travis.yml
   checkScripts: ->
     if @isJsEcosystem
-        pkg = require path.join(@cwd,"package.json")
+        pkg = require @proj "package.json"
         hasBuild = no
         hasWatch = no
         hasTest = no
@@ -67,6 +67,50 @@ export class HealthTask extends Task
 
     hasReadme = no
     if @hasReadme
-      readme = readFile path.join @cwd,\README.md
+      readme = readFile @proj \README.md
       if /#+ Installation/i is readme
         hasReadme = yes
+  checkHasSetup: ->
+    ::checkHasSetup.prompt ?= ~>
+        inquirer
+        .prompt([
+            type: \confirm
+            name: "addSetup"
+            message: "setup.py not exists would you like to?"
+        ])
+        .then (answers) ~>
+            # Use user feedback for... whatever!!
+            console.log answers
+            questions =
+              * type: \input
+                name: "pkgName"
+                message: "pkgName"
+              * type: \input
+                name: "disc"
+                message: "disc"
+              * type: \input
+                name: "url"
+                message: "url"
+              * type: \input
+                name: "email"
+                message: "email"
+              * type: \input
+                name: "author"
+                message: "author"
+            if answers.addSetup
+              inquirer.prompt questions
+              .then (answers) ~>
+                tpl = @tpl \setup.py
+                setupPath = path.join @cwd,\setup.py
+                content = @render tpl,answers 
+                @mergeWith setupPath,content
+        .catch (error) ~> 
+            if (error.isTtyError) 
+            # Prompt couldn't be rendered in the current environment
+                ...
+            else 
+            # Something else when wrong
+                console.error error
+    hasSetup = no
+    if @isPyEcosystem 
+      hasSetup = exists @proj \setup.py

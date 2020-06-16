@@ -11,16 +11,25 @@ require! {
 export class Context
   (@cwd = process.cwd!) ->
     @primaryLang  = (sourceFilesOrdered @cwd)[0][0]
-    @readmePath = path.join @cwd,\README.md
+    @readmePath = @proj \README.md
     @isJsEcosystem = @isJsEcosystem!
     @isVscodeExt = @isVscodeExt!
+    @isPyEcosystem = @isPyEcosystem!
+
+  proj:(name) ->
+    path.join @cwd,name
   
   isJsEcosystem: ->
-    exists path.join @cwd, \package.json
+    exists @proj \package.json
   
   isVscodeExt: ->
-    pkg = require path.join @cwd, \package.json
-    \engines of pkg and \vscode of pkg.engines
+    if @isJsEcosystem
+      pkg = require @proj \package.json
+      \engines of pkg and \vscode of pkg.engines
+    else
+      false
+  isPyEcosystem: ->
+    @primaryLang == ".py"
 
 ignores = (cwd) ->
   result = ["*.json","*.md","*.lock"]

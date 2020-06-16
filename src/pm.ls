@@ -5,25 +5,24 @@ require! {
   "./std/io":{ exists }
 }
 
-const cwd = process .cwd!
-useYarn = ->
+useYarn = (cwd) ->
   exists path.join cwd, \yarn.lock
 
-useNpm = ->
+useNpm = (cwd) ->
   exists path.join cwd, \package-lock.json
 
-usePnpm = ->
+usePnpm = (cwd) ->
   exists path.join cwd, \pnpm-lock.yaml
 
-export whichPm = ->
+export whichPm = (cwd) ->
   ## find which package manager be used (result cached)
   if not whichPm.result
     switch
-    case useYarn!
+    case useYarn cwd
       whichPm.result = \yarn
-    case useNpm!
+    case useNpm cwd
       whichPm.result = \npm
-    case usePnpm!
+    case usePnpm cwd
       whichPm.result = \pnpm
   else
     whichPm.result

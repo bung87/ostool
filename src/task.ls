@@ -51,7 +51,7 @@ export class Task
   cwd:process.cwd!
   -> return new Proxy(@, handler)
   installTask: (...deps) ->
-    pm = whichPm!
+    pm = whichPm @cwd
     switch pm
     case "yarn"
       deps unshift \add
@@ -86,13 +86,24 @@ export class Task
       rimraf.sync(pattern)
   
   copyFile: (src,des) ->
+    ## from this lib to project
     fs.createReadStream(path.join __dirname,src ).pipe(fs.createWriteStream( path.join @cwd,dest ))
 
   renderTo: (dest,tpl,ctx) ->
-    tmp = readFile(path.join __dirname,tpl)
+    tmp = readFile @tpl tpl
     render = compile tmp
     writeFile path.resolve(@cwd,dest),render(ctx)
 
+  render: (tpl,ctx) ->
+    _tpl = readFile tpl
+    render = compile(_tpl)
+    render ctx
+    
+  tpl:(name)->
+    path.join __dirname,"templates",name
+
+  proj:(name) ->
+    path.join @cwd,name
   writeTo: (dest,ctn) ->
     writeFile path.resolve(@cwd,dest),ctn
 

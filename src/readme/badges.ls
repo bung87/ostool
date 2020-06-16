@@ -18,6 +18,9 @@ vsRating = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/rat
 vsTrending = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/trending-monthly/#{publisher}.#{extname}.svg
 )](https://marketplace.visualstudio.com/items?itemName=#{publisher}.#{extname})"
 
+# py
+pypi = (pkgName) -> "[![PyPI](https://img.shields.io/pypi/v/#{pkgName}.svg)](https://pypi.python.org/pypi/#{pkgName})"
+
 export vsExtBadges = ( publisher,extname ) ->
   badges = 
     vsVersion publisher,extname
@@ -42,4 +45,8 @@ export nodeBadges = (primary,pkgName,username,repo) ->
     deps username,repo
     license pkgName
 
+export pybadges = (pkgName,username,repo) ->
+  badges =
+    buildStatus username,repo
+    pypi pkgName
 

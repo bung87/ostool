@@ -1,5 +1,7 @@
-assert = require 'assert' .strict
+require! {
+  process
+  "../src/pm": {whichPm} 
+  'assert': { strict:assert }
+}
 
-{whichPm} = require "../src/pm"
-
-assert.equal whichPm!, "yarn"
+assert.equal << whichPm process.cwd!, "yarn"
