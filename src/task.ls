@@ -3,6 +3,7 @@ require! {
   fs
   path
   chalk
+  rimraf
   "./std/io":{ writeFile, readFile, exists }
   "./pm":{ whichPm } 
   "./template":{ compile } 

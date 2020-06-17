@@ -4,6 +4,7 @@ require!{
   yargs
   "./context": { Context }
   "./health": { HealthTask }
+  "./task": { Task }
 }
 yargs.scriptName "ostool"
   ..usage('$0 <cmd> [args]')
@@ -14,5 +15,11 @@ yargs.scriptName "ostool"
       ctx = new Context process.cwd!
       task = new HealthTask <<< ctx
       task.process!
+  ..command "clean","clean files",
+    (yargs) ->
+    (argv) ->
+      ctx = new Context process.cwd!
+      task = new Task <<< ctx
+      task.cleanTask!
   ..help!
   ..argv
