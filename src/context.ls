@@ -3,8 +3,9 @@ require! {
   path
   process
   glob
+  ini
   "gitignore-globs": parse
-  "./std/io":{ exists }
+  "./std/io":{ exists,readFile }
 }
 
 
@@ -15,13 +16,22 @@ export class Context
     @isJsEcosystem = @isJsEcosystem!
     @isVscodeExt = @isVscodeExt!
     @isPyEcosystem = @isPyEcosystem!
-
+    if @isJsEcosystem
+      @useMirror = @useMirror!
   proj:(name) ->
     path.join @cwd,name
   
   isJsEcosystem: ->
     exists @proj \package.json
-  
+
+  useMirror: ->
+    used = no
+    config = ini.parse readFile path.join require('os').homedir(),\.npmrc
+    if \registry of config
+      org = config.registry.includes \https://registry.npmjs.org
+      com = config.registry.includes \https://registry.npmjs.com
+      used = !org and !com
+
   isVscodeExt: ->
     if @isJsEcosystem
       pkg = require @proj \package.json

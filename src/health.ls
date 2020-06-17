@@ -41,6 +41,11 @@ class HealthTask extends Task
 
   checkHasCI: -> exists @proj \.travis.yml
 
+  checkHasPublishConfig: ->
+    if @isJsEcosystem and @useMirror
+      pkg = require @proj "package.json"
+      \publishConfig of pkg
+
   checkScripts: ->
     if @isJsEcosystem
       pkg = require @proj "package.json"
@@ -195,6 +200,21 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
       pkg = require @proj \package.json
       if \husky of pkg == false
         pkg.husky = hooks:{"pre-commit": "npm test"}
+        @writeJSON (@proj \package.json),pkg
+
+HealthTask::checkHasPublishConfig.prompt = ->>
+  anwsers = await  prompt [
+    type: \confirm
+    name: "addPublishConfig"
+    message: "publishConfig not exists in package.json would you like to?"
+  ]
+  if anwsers.addPublishConfig
+    if @isJsEcosystem
+      pkg = require @proj \package.json
+      if \publishConfig of pkg == false
+        pkg.publishConfig = 
+          access: "public",
+          registry: "https://registry.npmjs.com"
         @writeJSON (@proj \package.json),pkg
 
 export HealthTask 
