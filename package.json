@@ -9,6 +9,10 @@
         "prepublishOnly": "npm run build",
         "test": "lsc tests"
     },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.com"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/bung87/ostool.git"

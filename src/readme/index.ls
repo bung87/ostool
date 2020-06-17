@@ -5,7 +5,7 @@ require! {
   "../context": { Context }
   "../template":{ compile }
   glob
-  inquirer
+  "../qa": { prompt }
   "./badges": { vsExtBadges,nodeBadges,pybadges }
 }
 
@@ -41,8 +41,7 @@ export class ReadMeTask extends Task
         # pkgName 
         # setup(
         #   name='bixin',
-        @answers ?= await inquirer
-        .prompt(
+        @answers ?= await prompt [
           * type:\input
             name:"pkgName"
             message:"package name"
@@ -52,7 +51,7 @@ export class ReadMeTask extends Task
           * repo:\input
             name:"repoUri"
             message:"repository uri"
-        )
+        ]
         _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
         _badges.filter( (x) -> x ).join " "
 
@@ -67,8 +66,7 @@ export class ReadMeTask extends Task
     else if @isPyEcosystem
       readmePath = @proj \README.md
       tpl =  @tpl << path.join \py,\README.md
-      @answers ?= await inquirer
-        .prompt(
+      @answers ?= await prompt [
           * type:\input
             name:"pkgName"
             message:"package name"
@@ -78,6 +76,6 @@ export class ReadMeTask extends Task
           * repo:\input
             name:"repoUri"
             message:"repository uri"
-        )
+      ]
       content = @render tpl,projectName: @answers.pkgName, badges: await ReadMeTask::badges ... 
       @mergeWith readmePath,content

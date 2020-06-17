@@ -113,7 +113,9 @@ export class Task
     writeFile path.resolve(@cwd,dest),ctn
 
   writeJSON:(dest,obj) ->
-    writeFile path.resolve(@cwd,dest),JSON.stringify(obj,null,4)
+    writeFile path.resolve(@cwd,dest),@prettyJSON obj
+
+  prettyJSON:(obj) -> JSON.stringify(obj,null,4)
   # printMethods: ->
   #   try
   #     for let key, value of @ 

@@ -28,6 +28,7 @@ export class Context
       \engines of pkg and \vscode of pkg.engines
     else
       false
+
   isPyEcosystem: ->
     @primaryLang == ".py"
 

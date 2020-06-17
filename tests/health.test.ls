@@ -16,4 +16,5 @@ assert.equal task.checkHasLicense!, true
 assert.equal task.checkHasCI!, true
 assert.equal task.checkScripts!, true
 assert.equal task.checkMetaInfo!, true
-task.checkReadmeHasInstallation!
+assert.equal task.checkReadmeHasInstallation!, true
+assert.equal task.checkHas-pre-commit-hook!, true

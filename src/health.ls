@@ -5,15 +5,17 @@ require! {
   "./context": { Context }
   "./readme": { ReadMeTask }
   "./license":{getLicense, maxLine}
+  "./qa": { prompt }
+  "./tasks/ts": { TsTask }
   glob
-  inquirer
+  
 }
 
-inquirer.registerPrompt("search-list", require("inquirer-search-list"))
 const licenseList = Array.from require("@ovyerus/licenses/simple")
 
 class HealthTask extends Task
   -> return super ...
+
   checkMetaInfo: ->
     if @isJsEcosystem
       conds = []
@@ -32,16 +34,20 @@ class HealthTask extends Task
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
     len = glob.sync "README.*",cwd:@cwd .length
     len == 1
+
   checkHasLicense: -> 
-    
     exists @proj \LICENSE
+
   checkHasCI: -> exists @proj \.travis.yml
+
   checkScripts: ->
     if @isJsEcosystem
       pkg = require @proj "package.json"
       hasBuild = no
       hasWatch = no
       hasTest = no
+      hasLint = no
+      hasFormat = no
       for key,val of pkg.scripts
         if key == "watch" and val.length > 0
           hasWatch = yes
@@ -49,9 +55,30 @@ class HealthTask extends Task
           hasBuild = yes
         else if key == "test" and val.length > 0
           hasTest = yes
-      return hasBuild and hasWatch and hasTest
-  checkReadmeHasInstallation: ->
+      questions = []
+      ::checkScripts.prompt ?= ~>>
+        pkg = require @proj "package.json"
+        anwsers = await prompt questions
+        if anwsers.addWatch
+          switch @primaryLang
+          case ".ls"
+            pkg.scripts.watch = "lsc -wco dist src"
+          case ".ts"
+            pkg.scripts.watch = "tsc -p . --watch"
+        if anwsers.addBuild
+          switch @primaryLang
+          case ".ls"
+            pkg.scripts.build = "lsc -co dist src"
+          case ".ts"
+            pkg.scripts.watch = "tsc -p ."
+        if anwsers.addTest
+          switch @primaryLang
+          case ".ls"
+            pkg.scripts.test = "lsc tests"
+        @writeJSON (@proj \package.json),pkg
+      return hasBuild and hasWatch and hasTest #and hasLint and hasFormat
 
+  checkReadmeHasInstallation: ->
     hasReadme = no
     if @hasReadme
       readme = readFile @proj \README.md
@@ -65,17 +92,15 @@ class HealthTask extends Task
   checkHas-pre-commit-hook: ->
     exists @proj \.git,\hooks,\pre-commit
 
-HealthTask::checkHasLicense.prompt ?= ->>
-  inquirer
-  .prompt([
-    type: \confirm
-    name: "addLicense"
-    message: "would you like to create one?"
-  ])
+HealthTask::checkHasLicense.prompt = ->>
+  questions =
+    * type: \confirm
+      name: "addLicense"
+      message: "would you like to create one?"
+  prompt questions
   .then (answers) ~>>
     if answers.addLicense
-      inquirer
-      .prompt([
+      prompt [
         * type: "search-list",
           message: "Select License",
           name: "License",
@@ -83,7 +108,7 @@ HealthTask::checkHasLicense.prompt ?= ->>
         * type: "input",
           message: "Your name in License",
           name: "name"
-      ])
+      ]
       .then (answers) ~>
         content = getLicense answers.License, author: answers.name, year: new Date().getFullYear!
         content = maxLine content
@@ -96,33 +121,32 @@ HealthTask::checkHasLicense.prompt ?= ->>
       # Something else when wrong
       console.error error
 
-HealthTask::checkReadmeHasInstallation.prompt ?= ->>
-  inquirer
-  .prompt([
+HealthTask::checkReadmeHasInstallation.prompt = ->>
+  prompt [
     type: \confirm
     name: "hasInstallation"
     message: "Readme has no Installatio section, would you like to?"
-  ])
+  ]
   .then (answers) ~>>
     # Use user feedback for... whatever!!
     console.log answers
     if answers.hasInstallation
       await ReadMeTask::gen ...
   .catch (error) ~> 
-      if (error.isTtyError) 
-        # Prompt couldn't be rendered in the current environment
-        ...
-      else 
-        # Something else when wrong
-        console.error error
+    if (error.isTtyError) 
+      # Prompt couldn't be rendered in the current environment
+      ...
+    else 
+      # Something else when wrong
+      console.error error
 
-HealthTask::checkHasSetup.prompt ?= ->>
-  inquirer
-  .prompt([
+HealthTask::checkHasSetup.prompt = ->>
+
+  prompt [
     type: \confirm
     name: "addSetup"
     message: "setup.py not exists would you like to?"
-  ])
+  ]
   .then (answers) ~>
     # Use user feedback for... whatever!!
     console.log answers
@@ -143,7 +167,7 @@ HealthTask::checkHasSetup.prompt ?= ->>
         name: "author"
         message: "author"
     if answers.addSetup
-      inquirer.prompt questions
+      prompt questions
       .then (answers) ~>
         tpl = @tpl \setup.py
         setupPath = path.join @cwd,\setup.py
@@ -157,13 +181,12 @@ HealthTask::checkHasSetup.prompt ?= ->>
       # Something else when wrong
       console.error error
 
-HealthTask::checkHas-pre-commit-hook.prompt ?= ->>
-  anwsers = await inquirer
-  .prompt([
+HealthTask::checkHas-pre-commit-hook.prompt = ->>
+  anwsers = await  prompt [
     type: \confirm
     name: "addHook"
     message: "pre commit hook not exists would you like to?"
-  ])
+  ]
   if anwsers.addHook
     if @isJsEcosystem
       @installTask \husky
