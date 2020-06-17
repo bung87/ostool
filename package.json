@@ -1,12 +1,13 @@
 {
     "name": "@bung87/ostool",
-    "version": "0.0.1",
+    "version": "0.0.4",
     "description": "open source project tool",
     "main": "dist/index.js",
     "scripts": {
+        "clean": "rm -rf dist",
         "watch": "lsc -wco dist src",
-        "build": "lsc -co dist src && cp -r src/templates dist/templates",
-        "prepublishOnly": "npm run build",
+        "build": "lsc -co dist src && cp -r src/templates dist/",
+        "prepublishOnly": "npm run clean && npm run build",
         "test": "lsc tests"
     },
     "publishConfig": {
