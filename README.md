@@ -7,11 +7,11 @@ planed support languages:
 
 ## Installation
 
-`yarn add ostool -D`  
+`yarn add @bung87/ostool -D`  
 
 or  
 
-`npm i --save-dev ostool`  
+`npm i --save-dev @bung87/ostool`  
 
 ## Usage  
 
