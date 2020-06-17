@@ -21,9 +21,9 @@ export class ReadMeTask extends Task
         username = pkg.author
         repo = if typeof pkg.repository == "object"
         then 
-          path.basename(pkg.repository.url)    
+          path.parse(pkg.repository.url).name
         else if typeof pkg.repository == "string"
-          path.basename(pkg.repository)
+          path.parse(pkg.repository).name
         else
           pkg.name
         pkgName = pkg.name
