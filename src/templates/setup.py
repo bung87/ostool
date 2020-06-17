@@ -12,11 +12,11 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = '{{pkgName}}'
-DESCRIPTION = '{{disc}}'
-URL = '{{url}}'
-EMAIL = '{{email}}'
-AUTHOR = '{{author}}'
+NAME = '{{&pkgName}}'
+DESCRIPTION = '{{&disc}}'
+URL = '{{&url}}'
+EMAIL = '{{&email}}'
+AUTHOR = '{{&author}}'
 REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '0.1.0'
 
