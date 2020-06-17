@@ -1,4 +1,4 @@
-# ostool [![Build Status](https://travis-ci.org/bung87/ostool.git.svg?branch=master)](https://travis-ci.org/bung87/ostool) [![Npm Version](https://badgen.net/npm/v/@bung87/ostool)](https://www.npmjs.com/package/@bung87/ostool) ![npm: total downloads](https://badgen.net/npm/dt/@bung87/ostool) ![Dep](https://badgen.net/david/dep/bung87/ostool.git) ![license](https://badgen.net/npm/license/@bung87/ostool)  
+# ostool [![Build Status](https://travis-ci.org/bung87/ostool.git.svg?branch=master)](https://travis-ci.org/bung87/ostool) [![Npm Version](https://badgen.net/npm/v/@bung87/ostool)](https://www.npmjs.com/package/@bung87/ostool) ![npm: total downloads](https://badgen.net/npm/dt/@bung87/ostool) ![Dep](https://badgen.net/david/dep/bung87/ostool) ![license](https://badgen.net/npm/license/@bung87/ostool)  
 
 planed support languages: 
 - js,ts,ls
