@@ -6,6 +6,7 @@ require! {
   "./readme": { ReadMeTask }
   "./license":{getLicense, maxLine}
   "./qa": { prompt }
+  'is-ci':isCI
   "./tasks/ts": { TsTask }
   glob
   
@@ -90,7 +91,7 @@ class HealthTask extends Task
       hasSetup = exists @proj \setup.py
   
   checkHas-pre-commit-hook: ->
-    if exists @proj \.git
+    if exists @proj \.git and !isCI
       exists @proj \.git,\hooks,\pre-commit
 
 HealthTask::checkHasLicense.prompt = ->>
