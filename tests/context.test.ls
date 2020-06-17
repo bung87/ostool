@@ -10,4 +10,4 @@ assert.equal ctx.primaryLang, \.ls
 assert.equal typeof ctx.isJsEcosystem, "boolean"
 assert.equal ctx.isJsEcosystem, true
 assert.equal ctx.isVscodeExt, false
-console.log ctx.useMirror
+console.log "ctx.useMirror",ctx.useMirror

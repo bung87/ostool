@@ -42,7 +42,7 @@ class HealthTask extends Task
   checkHasCI: -> exists @proj \.travis.yml
 
   checkHasPublishConfig: ->
-    if @isJsEcosystem and @useMirror
+    if !isCI and @isJsEcosystem and @useMirror
       pkg = require @proj "package.json"
       \publishConfig of pkg
 
