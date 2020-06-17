@@ -5,6 +5,7 @@ require! {
   "../src/task": { Task }
   "../src/health": { HealthTask }
   'assert': { strict:assert }
+  'is-ci':isCI
 }
 
 ctx = new Context process.cwd!
@@ -17,4 +18,5 @@ assert.equal task.checkHasCI!, true
 assert.equal task.checkScripts!, true
 assert.equal task.checkMetaInfo!, true
 assert.equal task.checkReadmeHasInstallation!, true
-assert.equal task.checkHas-pre-commit-hook!, true
+if !isCI
+  assert.equal task.checkHas-pre-commit-hook!, true
