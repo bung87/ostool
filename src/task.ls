@@ -12,12 +12,9 @@ require! {
   'is-ci':isCI
   'universal-diff':{ mergeStr,compareStr } 
   "./std/process": { runOut,runIn}
+  "./std/log":{ log,warning,success,alert,info}
 }
 
-warning = chalk.keyword('yellow')
-success = chalk.keyword('green')
-alert = chalk.keyword('red')
-log = console.log
 
 changeCase = (v) ->
   if /^[A-Z]+$/ is v
@@ -66,6 +63,10 @@ export class Task
     case "pnpm"
       deps .unshift \install
       deps .push \-d
+    default 
+      pm = \npm
+      deps .unshift \install
+      deps .push \--save-dev
     runOut(pm,...deps)
   
   mergeWith: (dest,content) ->

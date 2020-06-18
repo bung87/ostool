@@ -41,6 +41,7 @@
         "inquirer-search-list": "^1.2.6",
         "is-ci": "^2.0.0",
         "license": "^1.0.3",
+        "lodash.merge": "^4.6.2",
         "minimatch": "^3.0.4",
         "rimraf": "^3.0.2",
         "universal-diff": "^2.0.2",

@@ -3,7 +3,7 @@ require! {
 }
 
 export runOut = (cmd,...args) ->
-  spawn(cmd, args, stdio: \inherit )
+  spawn(cmd, args, stdio: <[\ignore \inherit \inherit]> )
 
 export runIn = (cmd,...args) ->
   child = spawnSync(cmd, args, stdio: \pipe )

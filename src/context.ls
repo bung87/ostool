@@ -9,12 +9,14 @@ require! {
   "./std/io":{ exists,readFile }
   "prelude-ls":{filter}
   "common-path-prefix"
+  "./std/log":{log,info}
 }
 
 
 export class Context
   (@cwd = process.cwd!) ->
-    @primaryLang  = (@sourceFilesOrdered @cwd)[0][0]
+    @primaryLang = (@sourceFilesOrdered @cwd)[0][0]
+
     # available after @sourceFilesOrdered
     # primary sources
     priSources = @sources
@@ -54,7 +56,7 @@ export class Context
     @primaryLang == ".py"
 
   ignores: (cwd) ->
-    result = ["**/*.json","**/*.md","**/*.lock","**/*.txt","**/*.gz","**/*.cfg","**/*.ini"]
+    result = ["**/node_modules/**","**/*.json","**/*.md","**/*.lock","**/*.txt","**/*.gz","**/*.cfg","**/*.ini"]
     dotgitignores = path.join cwd, ".gitignore"
     dotnpmignores = path.join cwd, ".npmignore"
     gitignores = parse dotgitignores if exists? dotgitignores

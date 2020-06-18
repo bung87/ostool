@@ -9,11 +9,10 @@ require! {
   'is-ci':isCI
   "./tasks/ts": { TsTask }
   glob
-  chalk
+  "./std/log":{log,info}
+  "./tasks/ts":{TsTask}
 }
 
-info = chalk.keyword('blue')
-log = console.log
 
 const licenseList = Array.from require("@ovyerus/licenses/simple")
 
@@ -120,6 +119,27 @@ class HealthTask extends Task
     if @isVscodeExt and @primaryLang == ".ts"
       exists @proj \rollup.config.ts
     # yeah, someone may write in other languages that compiles to js
+  checkHas-ts-lint-format: ->
+    if @primaryLang == ".ts"
+      pkg = require @proj "package.json"
+      hasLint = no
+      hasFormat = no
+      for key,val of pkg.scripts
+        if /lint/i is key and val.length > 0
+          hasLint = yes
+        else if /format|prettier|pretty/i is key and val.length > 0
+          hasFormat = yes
+      hasLint and hasFormat
+
+HealthTask::checkHas-ts-lint-format.prompt = ->>
+  questions = [
+    * type: \confirm
+      name: "addLintFormat"
+      message: "add lint format tools,would you like to?"
+    ]
+  answers = await prompt questions
+  if answers.addLintFormat
+    await TsTask::tsLintTask ...
 
 HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
   questions = [

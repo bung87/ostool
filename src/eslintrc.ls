@@ -14,7 +14,7 @@ export airbnbWithReact =
   parser: '@typescript-eslint/parser',
   plugins: [
     '@typescript-eslint',
-  ],
+  ]
   extends: [
     'airbnb-typescript',
   ]

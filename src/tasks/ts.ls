@@ -5,13 +5,15 @@ require! {
   "../context": { Context }
   "../qa": { prompt }
   glob
-  
+  "prelude-ls":{union}
+  "../std/log":{log,info}
+  'lodash.merge':merge
+  process
 }
 
 class TsTask extends Task
   -> return super ...
   tsLintTask: ->>
-    # npx eslint . --ext .js,.jsx,.ts,.tsx
     ## see https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/README.md
 
     @installTask \@typescript-eslint/parser,\@typescript-eslint/eslint-plugin
@@ -23,10 +25,10 @@ class TsTask extends Task
     # don't lint nyc coverage output
     coverage
     """
-    @mergeWith @proj \.eslintignore,eslintignore
+    @mergeWith (@proj \.eslintignore),eslintignore
     rc = require path.join __dirname,"..","eslintrc"
     anwsers = await prompt [
-      * type: "checkbox",
+      * type: "list",
         message: "Select Lint rules",
         name: "lint",
         choices: ["builtin","standard","airbnb with react","airbnb base"],
@@ -48,21 +50,28 @@ class TsTask extends Task
       \eslint-config-airbnb-typescript
       \eslint-plugin-import@^2.20.1
       \@typescript-eslint/eslint-plugin@^3.1.0
-
+ 
+    config = {extends:[]}
     switch anwsers.lint
     case "builtin"
-      config = rc.recommended
+      merge config, rc.recommended
     case "standard"
       @installTask ...standard
-      config = rc.standard
+      merge config, rc.standard
     case "airbnb with react"
       @installTask ...airbnbWithReact
-      config = rc.airbnbWithReact
+      merge config, rc.airbnbWithReact
     case "airbnb base"
       @installTask ...airbnb-base
-      config = rc.airbnbBase
+      merge config, rc.airbnbBase
     if anwsers.prettier
-      config.extends = union config.extends [\prettier/@typescript-eslint]
-    mergeWith @proj \.eslintrc.js,"module.exports = #{@prettyJSON config}"
+      deps = [\prettier]
+      @installTask ...deps
+      config.extends = union config.extends,[\prettier/@typescript-eslint]
+    @mergeWith (@proj \.eslintrc.js),"module.exports = #{@prettyJSON config}"
+    log info "now you can use `npx eslint . --ext .js,.jsx,.ts,.tsx`"
+    if anwsers.prettier
+      log info "now you can add `prettier --write .`"
+    anwsers
 
 export TsTask
