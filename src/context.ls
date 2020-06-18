@@ -24,7 +24,6 @@ export class Context
         minimatch(x,"**/{__tests__,test,tests}/*") == false
     # primary sources root dir
     @priSourcesRoot = common-path-prefix priSources
-    @readmePath = @proj \README.md
     @isJsEcosystem = @isJsEcosystem!
     @isVscodeExt = @isVscodeExt!
     @isPyEcosystem = @isPyEcosystem!
