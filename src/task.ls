@@ -4,6 +4,7 @@ require! {
   path
   chalk
   rimraf
+  util
   "./std/io":{ writeFile, readFile, exists }
   "./pm":{ whichPm } 
   "./template":{ compile } 
@@ -127,9 +128,12 @@ export class Task
       when key of Task:: == false and typeof value == "function"
         console.log key,value
 
-  process: !->
+  process: !->>
     for let key, value of @ 
       when key of Task:: == false and typeof value == "function"
         value ...
+
     for func in @taskQueue
-      func ...
+      if util.types.isAsyncFunction func
+        await func ...
+      
