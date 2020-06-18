@@ -2,7 +2,6 @@ require! {
   process
   fs
   path
-  "node-text-chunk":chunk
 }
 assert = require 'assert' .strict
 {Task} = require "../src/task"
