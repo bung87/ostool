@@ -9,8 +9,11 @@ require! {
   'is-ci':isCI
   "./tasks/ts": { TsTask }
   glob
-  
+  chalk
 }
+
+info = chalk.keyword('blue')
+log = console.log
 
 const licenseList = Array.from require("@ovyerus/licenses/simple")
 
@@ -113,11 +116,36 @@ class HealthTask extends Task
     if exists @proj \.git and !isCI
       exists @proj \.git,\hooks,\pre-commit
 
+  checkHas-vscode-extension-bundle: ->
+    if @isVscodeExt and @primaryLang == ".ts"
+      exists @proj \rollup.config.ts
+    # yeah, someone may write in other languages that compiles to js
+
+HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
+  questions = [
+    * type: \confirm
+      name: "addRollup"
+      message: "rollup.config.ts not exists,would you like to create one for bundle?"
+    ]
+  answers = await prompt questions
+  if answers.addRollup
+    deps =
+      'rollup'
+      'rollup-plugin-typescript2'
+      '@rollup/plugin-commonjs'
+      '@rollup/plugin-node-resolve'
+      '@rollup/plugin-json'
+    @installTask ...deps
+    src = @proj \rollup.config.ts
+    @renderTo src,\rollup.config.ts,src:@priSourcesRoot
+    log info "now you can bundle through `rollup -c rollup.config.ts`"
+
 HealthTask::checkHasLicense.prompt = ->>
-  questions =
+  questions = [
     * type: \confirm
       name: "addLicense"
       message: "would you like to create one?"
+    ]
   prompt questions
   .then (answers) ~>>
     if answers.addLicense
