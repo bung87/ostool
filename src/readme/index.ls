@@ -13,9 +13,8 @@ export class ReadMeTask extends Task
   -> return super ...
 
   badges: ->> 
-    readmePath = @proj \README.md
     primary = @primaryLang
-    if exists readmePath
+    if exists @readme
       if @isJsEcosystem
         pkg = require @proj \package.json
         username = pkg.author
@@ -58,13 +57,11 @@ export class ReadMeTask extends Task
   gen: ->>
     if @isJsEcosystem
       pkg = require @proj \package.json
-      readmePath = @proj \README.md
       tpl =  @tpl << path.join \js,\README.md
       # .badges might called by other context
       content = @render tpl,projectName: pkg.name, badges: await ReadMeTask::badges ... 
-      @mergeWith readmePath,content
+      @mergeWith @readme,content
     else if @isPyEcosystem
-      readmePath = @proj \README.md
       tpl =  @tpl << path.join \py,\README.md
       @answers ?= await prompt [
           * type:\input
@@ -78,4 +75,4 @@ export class ReadMeTask extends Task
             message:"repository uri"
       ]
       content = @render tpl,projectName: @answers.pkgName, badges: await ReadMeTask::badges ... 
-      @mergeWith readmePath,content
+      @mergeWith @readme,content

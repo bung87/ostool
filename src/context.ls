@@ -4,14 +4,26 @@ require! {
   process
   glob
   ini
+  minimatch
   "gitignore-globs": parse
   "./std/io":{ exists,readFile }
+  "prelude-ls":{filter}
+  "common-path-prefix"
 }
 
 
 export class Context
   (@cwd = process.cwd!) ->
-    @primaryLang  = (sourceFilesOrdered @cwd)[0][0]
+    @primaryLang  = (@sourceFilesOrdered @cwd)[0][0]
+    # available after @sourceFilesOrdered
+    # primary sources
+    priSources = @sources
+      |> filter (x) ~> 
+        path.extname(x) == @primaryLang
+      |> filter (x) ->
+        minimatch(x,"**/{__tests__,test,tests}/*") == false
+    # primary sources root dir
+    @priSourcesRoot = common-path-prefix priSources
     @readmePath = @proj \README.md
     @isJsEcosystem = @isJsEcosystem!
     @isVscodeExt = @isVscodeExt!
@@ -42,25 +54,25 @@ export class Context
   isPyEcosystem: ->
     @primaryLang == ".py"
 
-ignores = (cwd) ->
-  result = ["**/*.json","**/*.md","**/*.lock","**/*.txt","**/*.gz","**/*.cfg","**/*.ini"]
-  dotgitignores = path.join cwd, ".gitignore"
-  dotnpmignores = path.join cwd, ".npmignore"
-  gitignores = parse dotgitignores if exists? dotgitignores
-  npmignores = parse dotnpmignores if exists? dotnpmignores
-  result = result ++ that if gitignores
-  result = result ++ that if npmignores
-  return result
+  ignores: (cwd) ->
+    result = ["**/*.json","**/*.md","**/*.lock","**/*.txt","**/*.gz","**/*.cfg","**/*.ini"]
+    dotgitignores = path.join cwd, ".gitignore"
+    dotnpmignores = path.join cwd, ".npmignore"
+    gitignores = parse dotgitignores if exists? dotgitignores
+    npmignores = parse dotnpmignores if exists? dotnpmignores
+    result = result ++ that if gitignores
+    result = result ++ that if npmignores
+    return result
 
-files = (cwd) ->
-  glob.sync "**", ignore:(ignores cwd), cwd: cwd, nodir: true
+  files: (cwd) ->
+    @sources = glob.sync "**", ignore:(@ignores cwd), cwd: cwd, nodir: true
 
-countMap = (arr)  ->
-  arr.reduce( (countMap, word) -> 
-    ext = path.extname(word)
-    countMap[ext] = ++countMap[ext] || 1
-    return countMap
-  , {})
+  countMap: (arr)  ->
+    arr.reduce( (countMap, word) -> 
+      ext = path.extname(word)
+      countMap[ext] = ++countMap[ext] || 1
+      return countMap
+    , {})
 
-sourceFilesOrdered = (cwd) ->
-  Object.entries (countMap files cwd) .sort (a,b) -> b[1] - a[1]
+  sourceFilesOrdered: (cwd) ->
+    Object.entries (@countMap @files cwd) .sort (a,b) -> b[1] - a[1]

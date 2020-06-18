@@ -33,11 +33,19 @@ class HealthTask extends Task
 
   checkHasReadme: -> 
     # exists path.join @cwd,\README.md or exists path.join @cwd,\README.md
-    len = glob.sync "README.*",cwd:@cwd .length
-    len == 1
+    files = glob.sync "README.*",cwd:@cwd 
+    if files.length > 0
+      @readme = files[0]
+      @readmeFormat = path.extname files[0]
+    files.length == 1
 
   checkHasLicense: -> 
-    exists @proj \LICENSE
+    # could be LICENSE or license
+    LICENSE = exists @proj \LICENSE
+    license = exists @proj \license
+    @license = @proj \license if license
+    @license = @proj \LICENSE if LICENSE
+    license or LICENSE
 
   checkHasCI: -> exists @proj \.travis.yml
 
@@ -62,6 +70,12 @@ class HealthTask extends Task
         else if key == "test" and val.length > 0
           hasTest = yes
       questions = []
+      if not hasWatch
+        questions .push type:\confirm,name:\addWatch,message:"add watch to scripts"
+      if not hasBuild 
+        questions .push type:\confirm,name:\addBuild,message:"add build to scripts"
+      if not hasTest
+        questions .push type:\confirm,name:\addTest,message:"add test to scripts"
       ::checkScripts.prompt ?= ~>>
         pkg = require @proj "package.json"
         anwsers = await prompt questions
@@ -76,7 +90,7 @@ class HealthTask extends Task
           case ".ls"
             pkg.scripts.build = "lsc -co dist src"
           case ".ts"
-            pkg.scripts.watch = "tsc -p ."
+            pkg.scripts.build = "tsc -p ."
         if anwsers.addTest
           switch @primaryLang
           case ".ls"
@@ -119,7 +133,7 @@ HealthTask::checkHasLicense.prompt = ->>
       .then (answers) ~>
         content = getLicense answers.License, author: answers.name, year: new Date().getFullYear!
         content = maxLine content
-        @writeTo  \LICENSE,content
+        @writeTo  @license,content
   .catch (error) ~> 
     if (error.isTtyError) 
       # Prompt couldn't be rendered in the current environment

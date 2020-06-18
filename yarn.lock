@@ -200,6 +200,11 @@ commander@~2.20.3:
   resolved "https://r.cnpmjs.org/commander/download/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha1-/UhehMA+tIgcIHIrpIA16FMa6zM=
 
+common-path-prefix@^3.0.0:
+  version "3.0.0"
+  resolved "https://r.cnpmjs.org/common-path-prefix/download/common-path-prefix-3.0.0.tgz#7d007a7e07c58c4b4d5f433131a19141b29f11e0"
+  integrity sha1-fQB6fgfFjEtNX0MxMaGRQbKfEeA=
+
 compare-versions@^3.6.0:
   version "3.6.0"
   resolved "https://r.cnpmjs.org/compare-versions/download/compare-versions-3.6.0.tgz#1a5689913685e5a87637b8d3ffca75514ec41d62"
@@ -762,11 +767,6 @@ prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://r.cnpmjs.org/prelude-ls/download/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
-
-prelude@^0.8.2:
-  version "0.8.2"
-  resolved "https://r.cnpmjs.org/prelude/download/prelude-0.8.2.tgz#e77b2777fb536a6690798f4c3c0a4f53fa6b5da8"
-  integrity sha1-53snd/tTamaQeY9MPApPU/prXag=
 
 prompts@^2.3.2:
   version "2.3.2"
