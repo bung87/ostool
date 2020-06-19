@@ -78,7 +78,7 @@ class HealthTask extends Task
       if not hasTest
         questions .push type:\confirm,name:\addTest,message:"add test to scripts"
       ::checkScripts.prompt ?= ~>>
-        pkg = require @proj "package.json"
+        pkg = require (@proj "package.json")
         anwsers = await prompt questions
         if anwsers.addWatch
           switch @primaryLang
@@ -120,7 +120,7 @@ class HealthTask extends Task
     # yeah, someone may write in other languages that compiles to js
   checkHas-ts-lint-format: ->
     if @primaryLang == ".ts"
-      pkg = require @proj "package.json"
+      pkg = require (@proj "package.json")
       hasLint = no
       hasFormat = no
       for key,val of pkg.scripts

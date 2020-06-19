@@ -12,16 +12,13 @@ require! {
   rimraf
 }
 class Mock 
-  (@TargetTask) ->
+  (@TargetTask) ~>
     @mkProject!
-    @task = (new @TargetTask)
-    # give cwd first
-    console.log "tmpDir#{@tmpDir.name}"
-    @task.cwd = @tmpDir.name
+    @task = (new @TargetTask(@tmpDir.name))
 
   mkProject: ->
     @tmpDir = tmp.dirSync!
-    process.on 'exit' ->
+    process.on 'exit' ~>
       rimraf.sync(@tmpDir.name)
     @src = path.join @tmpDir.name,"src"
     mkdir @src
@@ -32,12 +29,11 @@ class Mock
     @task.__isTest = true
   
   process: ->>
+
     assert @task.cwd.length > 0,"task has no cwd"
-    assert path.normalize(@task.cwd) !=  path.normalize(process.cwd!),"task cwd is this project"
+    # assert path.normalize(@task.cwd) !=  path.normalize(process.cwd!),"task cwd is this project"
     that.apply @task if @setup
     @prepare!
     await @task.process!
-    assert @tmpDir.name.length > 0,"task has no tmpDir"
-    
     # @tmpDir.removeCallback!
 export Mock

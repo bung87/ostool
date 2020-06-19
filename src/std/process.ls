@@ -2,9 +2,9 @@ require! {
   'child_process':{ spawnSync,spawn }
 }
 
-export runOut = (cmd,...args) ->
-  spawn(cmd, args, stdio: <[\ignore \inherit \inherit]> )
+export runOut = (cmd,cwd,...args) ->
+  spawn(cmd, args, {cwd:cwd,stdio: <[\ignore \inherit \inherit]> })
 
-export runIn = (cmd,...args) ->
-  child = spawnSync(cmd, args, stdio: \pipe )
+export runIn = (cmd,cwd,...args) ->
+  child = spawnSync(cmd, args, {stdio: \pipe,cwd:cwd} )
   child.stdout?.toString!.trim!

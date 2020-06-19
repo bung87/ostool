@@ -51,9 +51,9 @@ handler =
       obj[prop]
 
 export class Task
-  taskQueue:new Set()
-  cwd:process.cwd!
-  -> return new Proxy(@, handler)
+  (@cwd = process.cwd!) -> 
+    @taskQueue = new Set()
+    return new Proxy(@, handler)
   installTask: (...deps) ->
     pm = whichPm @cwd
     switch pm
@@ -70,7 +70,7 @@ export class Task
       pm = \npm
       deps .unshift \install
       deps .push \--save-dev
-    runOut(pm,...deps)
+    runOut(pm,@cwd,...deps)
   
   mergeWith: (dest,content) ->
     if exists dest

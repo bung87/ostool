@@ -12,3 +12,6 @@ export exists = ->
 
 export mkdir = ->
   fs.mkdirSync ...
+
+export removeFile = ->
+  fs.unlinkSync ...
