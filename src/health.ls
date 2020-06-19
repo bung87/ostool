@@ -46,7 +46,7 @@ class HealthTask extends Task
     LICENSE = exists @proj \LICENSE
     license = exists @proj \license
     @license = @proj \license if license
-    @license = @proj \LICENSE if LICENSE
+    @license ?= @proj \LICENSE
     license or LICENSE
 
   checkHasCI: -> exists @proj \.travis.yml
@@ -166,6 +166,7 @@ HealthTask::checkHasLicense.prompt = ->>
       name: "addLicense"
       message: "would you like to create one?"
     ]
+
   prompt questions
   .then (answers) ~>>
     if answers.addLicense
