@@ -12,31 +12,32 @@ require! {
   rimraf
 }
 class Mock 
-  (@TargetTask) ~>
+  (@TargetTask) ->
     @mkProject!
     @task = (new @TargetTask)
     # give cwd first
+    console.log "tmpDir#{@tmpDir.name}"
     @task.cwd = @tmpDir.name
 
   mkProject: ->
     @tmpDir = tmp.dirSync!
+    process.on 'exit' ->
+      rimraf.sync(@tmpDir.name)
     @src = path.join @tmpDir.name,"src"
     mkdir @src
 
   prepare: ->
     @ctx = new Context(@tmpDir.name)
     @task <<< @ctx
+    @task.__isTest = true
   
   process: ->>
+    assert @task.cwd.length > 0,"task has no cwd"
+    assert path.normalize(@task.cwd) !=  path.normalize(process.cwd!),"task cwd is this project"
     that.apply @task if @setup
     @prepare!
-    @task.process!
-    rimraf.sync(@tmpDir.name)
+    await @task.process!
+    assert @tmpDir.name.length > 0,"task has no tmpDir"
+    
     # @tmpDir.removeCallback!
-
-mock = Mock(HealthTask) with 
-  setup:->
-    @writeTo "index.ts",""
-    @writeJSON "package.json",{}
-
-mock.process!
+export Mock

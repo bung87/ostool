@@ -42,13 +42,16 @@ handler =
             ret
           else
             log warning "[ ] #{sentence}"
-            obj.taskQueue.push that if (!isCI and process.stdout.isTTY) and obj[prop].prompt
+            query = (obj.__isTest or !isCI or process.stdout.isTTY)
+            if obj.__isTest
+              console.log "query user:#{query}"
+            obj.taskQueue.add that if query and obj[prop].prompt
           ret
     else
       obj[prop]
 
 export class Task
-  taskQueue:[]
+  taskQueue:new Set()
   cwd:process.cwd!
   -> return new Proxy(@, handler)
   installTask: (...deps) ->
@@ -133,8 +136,9 @@ export class Task
     for let key, value of @ 
       when key of Task:: == false and typeof value == "function"
         value ...
-
-    for func in @taskQueue
+    if @__isTest
+      console.log "task Queue size:",@taskQueue.size
+    @taskQueue.forEach (func) ~>>
       if util.types.isAsyncFunction func
         await func ...
       

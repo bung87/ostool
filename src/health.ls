@@ -10,7 +10,6 @@ require! {
   "./tasks/ts": { TsTask }
   glob
   "./std/log":{log,info}
-  "./tasks/ts":{TsTask}
 }
 
 
@@ -164,32 +163,24 @@ HealthTask::checkHasLicense.prompt = ->>
   questions = [
     * type: \confirm
       name: "addLicense"
-      message: "would you like to create one?"
+      message: "License file not exists,would you like to create one?"
     ]
-
-  prompt questions
-  .then (answers) ~>>
-    if answers.addLicense
-      prompt [
-        * type: "search-list",
-          message: "Select License",
-          name: "License",
-          choices: licenseList,
-        * type: "input",
-          message: "Your name in License",
-          name: "name"
-      ]
-      .then (answers) ~>
-        content = getLicense answers.License, author: answers.name, year: new Date().getFullYear!
-        content = maxLine content
-        @writeTo  @license,content
-  .catch (error) ~> 
-    if (error.isTtyError) 
-      # Prompt couldn't be rendered in the current environment
-        ...
-    else 
-      # Something else when wrong
-      console.error error
+  answers = prompt questions
+  if answers.addLicense
+    answers2 = await prompt [
+      * type: "search-list",
+        message: "Select License",
+        name: "License",
+        choices: licenseList,
+      * type: "input",
+        message: "Your name in License",
+        name: "name"
+    ]
+    
+    content = getLicense answers2.License, author: answers2.name, year: new Date().getFullYear!
+    content = maxLine content
+    @writeTo  @license,content
+  
 
 HealthTask::checkReadmeHasInstallation.prompt = ->>
   prompt [
@@ -215,7 +206,7 @@ HealthTask::checkHasSetup.prompt = ->>
   prompt [
     type: \confirm
     name: "addSetup"
-    message: "setup.py not exists would you like to?"
+    message: "setup.py not exists would you like to create one?"
   ]
   .then (answers) ~>
     # Use user feedback for... whatever!!
@@ -240,7 +231,7 @@ HealthTask::checkHasSetup.prompt = ->>
       prompt questions
       .then (answers) ~>
         tpl = @tpl \setup.py
-        setupPath = path.join @cwd,\setup.py
+        setupPath = @proj \setup.py
         content = @render tpl,answers 
         @mergeWith setupPath,content
   .catch (error) ~> 
@@ -255,7 +246,7 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
   anwsers = await  prompt [
     type: \confirm
     name: "addHook"
-    message: "pre commit hook not exists would you like to?"
+    message: "pre commit hook not exists would you like to create one?"
   ]
   if anwsers.addHook
     if @isJsEcosystem
@@ -269,7 +260,7 @@ HealthTask::checkHasPublishConfig.prompt = ->>
   anwsers = await  prompt [
     type: \confirm
     name: "addPublishConfig"
-    message: "publishConfig not exists in package.json would you like to?"
+    message: "publishConfig not exists in package.json would you like to create one?"
   ]
   if anwsers.addPublishConfig
     if @isJsEcosystem

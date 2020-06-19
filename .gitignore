@@ -1,5 +1,7 @@
 #### joe made this: http://goel.io/joe
 dist/
+mock/*.js
+local_test.ls
 #### node ####
 # Logs
 logs

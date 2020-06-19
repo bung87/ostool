@@ -29,6 +29,7 @@
     "devDependencies": {
         "husky": "^4.2.5",
         "livescript": "^1.6.0",
+        "pirates": "^4.0.1",
         "tmp": "^0.2.1"
     },
     "dependencies": {
