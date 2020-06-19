@@ -57,7 +57,7 @@ export class ReadMeTask extends Task
   gen: ->>
     if @isJsEcosystem
       pkg = require @proj \package.json
-      tpl =  @tpl << path.join \js,\README.md
+      tpl =  @tpl (path.join \js,\README.md)
       # .badges might called by other context
       content = @render tpl,projectName: pkg.name, badges: await ReadMeTask::badges ... 
       @mergeWith @readme,content

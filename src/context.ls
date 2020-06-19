@@ -17,7 +17,7 @@ require! {
 export class Context
   (@cwd = process.cwd!) ->
     files = (@sourceFilesOrdered @cwd)
-    assert files.length > 0,"no source file found!"
+    assert files.length > 0,"no source file found! files:#{files.length}"
     @primaryLang = files[0][0]
 
     # available after @sourceFilesOrdered
@@ -34,6 +34,7 @@ export class Context
     @isPyEcosystem = @isPyEcosystem!
     if @isJsEcosystem
       @useMirror = @useMirror!
+
   proj:(name) ->
     path.join @cwd,name
   

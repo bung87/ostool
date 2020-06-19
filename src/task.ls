@@ -43,8 +43,8 @@ handler =
           else
             log warning "[ ] #{sentence}"
             query = (obj.__isTest or !isCI or process.stdout.isTTY)
-            if obj.__isTest
-              console.log "query user:#{query}"
+            # if obj.__isTest
+            #   console.log "query user:#{query}"
             obj.taskQueue.add that if query and obj[prop].prompt
           ret
     else

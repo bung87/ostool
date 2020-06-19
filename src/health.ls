@@ -38,6 +38,8 @@ class HealthTask extends Task
     if files.length > 0
       @readme = files[0]
       @readmeFormat = path.extname files[0]
+    else
+      @readme = @proj \README.md
     files.length == 1
 
   checkHasLicense: -> 
@@ -79,6 +81,7 @@ class HealthTask extends Task
         questions .push type:\confirm,name:\addTest,message:"add test to scripts"
       ::checkScripts.prompt ?= ~>>
         pkg = require (@proj "package.json")
+        pkg.scripts ?= {}
         anwsers = await prompt questions
         if anwsers.addWatch
           switch @primaryLang
@@ -105,6 +108,7 @@ class HealthTask extends Task
       readme = readFile @proj \README.md
       if /#+ Installation/i is readme
         hasReadme = yes
+    hasReadme
 
   checkHasSetup: ->
     if @isPyEcosystem 
@@ -165,7 +169,7 @@ HealthTask::checkHasLicense.prompt = ->>
       name: "addLicense"
       message: "License file not exists,would you like to create one?"
     ]
-  answers = prompt questions
+  answers = await prompt questions
   if answers.addLicense
     answers2 = await prompt [
       * type: "search-list",
@@ -251,7 +255,7 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
   if anwsers.addHook
     if @isJsEcosystem
       @installTask \husky
-      pkg = require @proj \package.json
+      pkg = require (@proj \package.json)
       if \husky of pkg == false
         pkg.husky = hooks:{"pre-commit": "npm test"}
         @writeJSON (@proj \package.json),pkg
