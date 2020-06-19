@@ -28,7 +28,8 @@
     "license": "MIT",
     "devDependencies": {
         "husky": "^4.2.5",
-        "livescript": "^1.6.0"
+        "livescript": "^1.6.0",
+        "tmp": "^0.2.1"
     },
     "dependencies": {
         "chalk": "^4.1.0",

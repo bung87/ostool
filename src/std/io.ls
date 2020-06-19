@@ -9,3 +9,6 @@ export readFile = ->
 
 export exists = ->
   fs.existsSync ...
+
+export mkdir = ->
+  fs.mkdirSync ...

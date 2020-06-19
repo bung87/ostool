@@ -5,6 +5,7 @@ require! {
   glob
   ini
   minimatch
+  'assert': { strict:assert }
   "gitignore-globs": parse
   "./std/io":{ exists,readFile }
   "prelude-ls":{filter}
@@ -15,7 +16,9 @@ require! {
 
 export class Context
   (@cwd = process.cwd!) ->
-    @primaryLang = (@sourceFilesOrdered @cwd)[0][0]
+    files = (@sourceFilesOrdered @cwd)
+    assert files.length > 0,"no source file found!"
+    @primaryLang = files[0][0]
 
     # available after @sourceFilesOrdered
     # primary sources
