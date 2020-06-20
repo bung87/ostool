@@ -132,12 +132,11 @@ export class Task
       when key of Task:: == false and typeof value == "function"
         console.log key,value
 
-  process: !->>
+  process: ->>
     for let key, value of @ 
       when key of Task:: == false and typeof value == "function"
         value ...
-    if @__isTest
-      console.log "task Queue size:",@taskQueue.size
+
     Array.from(@taskQueue).reduce (p,func) ~>>
       if util.types.isAsyncFunction func
         p.then ~>>

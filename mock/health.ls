@@ -20,6 +20,7 @@ mock = Mock(HealthTask) with
     if out.length > 1
       log (info out)
       subprocess.stdout.resume!
+      
     if out.trim!.endsWith("(Y/n)")
       subprocess.stdin.write "Y\n"
     else if !@licenseSelected and out.includes "Select License"
