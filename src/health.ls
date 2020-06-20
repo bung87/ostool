@@ -81,7 +81,7 @@ class HealthTask extends Task
         questions .push type:\confirm,name:\addBuild,message:"add build to scripts"
       if not hasTest
         questions .push type:\confirm,name:\addTest,message:"add test to scripts"
-      HealthTask::checkScripts.prompt ?= ~>>
+      HealthTask::checkScripts.prompt = ~>>
         pkg = require (@proj "package.json")
         pkg.scripts ?= {}
         anwsers = await prompt questions
@@ -146,8 +146,10 @@ HealthTask::checkHas-ts-lint-format.prompt = ->>
     ]
   answers = await prompt questions
   if answers.addLintFormat
-    await TsTask::tsLintTask ...
-
+    return await TsTask::tsLintTask ...
+  else
+    Promise.resolve!
+  
 HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
   questions = [
     * type: \confirm
@@ -166,6 +168,9 @@ HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
     src = @proj \rollup.config.ts
     @renderTo src,\rollup.config.ts,src:@priSourcesRoot
     log info "now you can bundle through `rollup -c rollup.config.ts`"
+    return Promise.resolve!
+  else
+    return Promise.resolve!
 
 HealthTask::checkHasLicense.prompt = ->>
   questions = [
@@ -188,7 +193,9 @@ HealthTask::checkHasLicense.prompt = ->>
     content = getLicense answers2.license, author: answers2.authorInLicense, year: String(new Date().getFullYear!)
     content = maxLine content
     @writeTo  @license,content
-  
+    return answers2
+  else
+    return Promise.resolve!
 
 HealthTask::checkReadmeHasInstallation.prompt = ->>
   return prompt [
@@ -251,7 +258,7 @@ HealthTask::checkHasSetup.prompt = ->>
       console.error error
 
 HealthTask::checkHas-pre-commit-hook.prompt = ->>
-  anwsers = await  prompt [
+  anwsers = await prompt [
     type: \confirm
     name: "addHook"
     message: "pre commit hook not exists would you like to create one?"
@@ -263,8 +270,11 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
       if \husky of pkg == false
         pkg.husky = hooks:{"pre-commit": "npm test"}
         @writeJSON (@proj \package.json),pkg
+        return Promise.resolve!
+  else
+    return Promise.resolve!
 
-HealthTask::checkHasPublishConfig.prompt = !->>
+HealthTask::checkHasPublishConfig.prompt = ->>
 
   anwsers = await prompt [
     type: \confirm
@@ -279,5 +289,8 @@ HealthTask::checkHasPublishConfig.prompt = !->>
           access: "public",
           registry: "https://registry.npmjs.com"
         @writeJSON (@proj \package.json),pkg
-  
+        return Promise.resolve!
+  else
+    return Promise.resolve!
+
 export HealthTask 

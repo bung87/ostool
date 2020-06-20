@@ -142,5 +142,7 @@ export class Task
       if util.types.isAsyncFunction func
         p.then ~>>
           await func ...
+      else
+        Promise.resolve(func ...)
     ,Promise.resolve()
       
