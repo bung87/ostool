@@ -4,6 +4,7 @@ require!{
   "../src/health":{HealthTask}
   'assert': { strict:assert }
   "../src/std/io": {exists,readFile}
+  "../src/std/log": {log,info}
 }
 mock = Mock(HealthTask) with 
   setup:->
@@ -11,17 +12,25 @@ mock = Mock(HealthTask) with
     @writeJSON "package.json",{}
     assert exists(@proj "index.ts")
 
-  answer:(subprocess,data) ->
+  nameWrote :false
+  licenseSelected : false
+  answer:(subprocess,data) !~>
   ## called in subprocess, no this context
-    out = data.toString!
-    console.log out
-    if out.trim!.endsWith("(Y/n)")
+    out = data.toString!.trim!
+    if out.length > 1
+      log (info out)
+      subprocess.stdout.resume!
+    if out.endsWith("(Y/n)")
       subprocess.stdin.write "Y\n"
-    else if out.includes("Select")
+    else if !@licenseSelected and out.includes "Select License"
+      subprocess.stdin.write "MIT\n"
+      @licenseSelected = true
+    else if out.includes("Select") and not out.includes "Select License"
       subprocess.stdin.write "\n"
-    else if out.includes "Your name"
+    else if !@nameWrote and out.trim!.endsWith "Your name in License"
       subprocess.stdin.write "bung\n"
-
+      @nameWrote = true
+    
   beforeExit:(log) !->
   ## called in subprocess, this context is mock.task
     pkg = require @proj "package.json"
@@ -29,8 +38,8 @@ mock = Mock(HealthTask) with
     assert pkg.scripts.watch == "tsc -p . --watch","pkg.scripts has no watch"
     assert exists @proj \README.md
     assert exists @proj \LICENSE
-    log readFile @proj "package.json"
-    log readFile @proj \README.md
-    log readFile @proj \LICENSE
+    license = readFile @proj \LICENSE
+    assert license.includes "MIT"
+    assert license.includes "bung"
 
 module.exports = mock

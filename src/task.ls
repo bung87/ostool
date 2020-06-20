@@ -138,7 +138,9 @@ export class Task
         value ...
     if @__isTest
       console.log "task Queue size:",@taskQueue.size
-    @taskQueue.forEach (func) ~>>
+    Array.from(@taskQueue).reduce (p,func) ~>>
       if util.types.isAsyncFunction func
-        await func ...
+        p.then ~>>
+          await func ...
+    ,Promise.resolve()
       

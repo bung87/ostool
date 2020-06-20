@@ -9,11 +9,13 @@ require! {
   'is-ci':isCI
   "./tasks/ts": { TsTask }
   glob
+  process
+  'assert': { strict:assert }
   "./std/log":{log,info}
 }
 
 
-const licenseList = Array.from require("@ovyerus/licenses/simple")
+const licenseList = Array.from(require("@ovyerus/licenses/simple")).sort!
 
 class HealthTask extends Task
   -> return super ...
@@ -79,7 +81,7 @@ class HealthTask extends Task
         questions .push type:\confirm,name:\addBuild,message:"add build to scripts"
       if not hasTest
         questions .push type:\confirm,name:\addTest,message:"add test to scripts"
-      ::checkScripts.prompt ?= ~>>
+      ::checkScripts.prompt ?= !~>>
         pkg = require (@proj "package.json")
         pkg.scripts ?= {}
         anwsers = await prompt questions
@@ -174,23 +176,23 @@ HealthTask::checkHasLicense.prompt = ->>
     answers2 = await prompt [
       * type: "search-list",
         message: "Select License",
-        name: "License",
+        name: "license",
         choices: licenseList,
+        default:"MIT"
       * type: "input",
         message: "Your name in License",
-        name: "name"
+        name: "authorInLicense"
     ]
-    
-    content = getLicense answers2.License, author: answers2.name, year: new Date().getFullYear!
+    content = getLicense answers2.license, author: answers2.authorInLicense, year: String(new Date().getFullYear!)
     content = maxLine content
     @writeTo  @license,content
   
 
 HealthTask::checkReadmeHasInstallation.prompt = ->>
-  prompt [
+  return prompt [
     type: \confirm
     name: "hasInstallation"
-    message: "Readme has no Installatio section, would you like to?"
+    message: "Readme has no Installation section, would you like to?"
   ]
   .then (answers) ~>>
     # Use user feedback for... whatever!!
@@ -261,7 +263,7 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
         @writeJSON (@proj \package.json),pkg
 
 HealthTask::checkHasPublishConfig.prompt = ->>
-  anwsers = await  prompt [
+  anwsers = await prompt [
     type: \confirm
     name: "addPublishConfig"
     message: "publishConfig not exists in package.json would you like to create one?"

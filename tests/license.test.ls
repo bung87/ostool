@@ -14,5 +14,6 @@ pkg = require path.join process.cwd!, \package.json
 content = getLicense pkg.license, author: pkg.author, year: new Date().getFullYear!
 content = maxLine content
 task.writeTo  \LICENSE,content
+assert content.includes pkg.author
 license = path.join process.cwd!, \LICENSE
 assert.equal << fs.existsSync license, true

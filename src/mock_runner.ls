@@ -6,6 +6,7 @@ require!{
   "./std/io":{ writeFile,readFile,removeFile }
   pirates:{addHook}
   glob
+  readline
 }
 
 tmp = """
@@ -47,6 +48,7 @@ for file in files
 
   subprocess.on 'exit', ->
     removeFile dest
+
   subprocess.stdout.on "data",mock.answer.bind(null,subprocess)
 
 
