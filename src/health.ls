@@ -265,11 +265,12 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
         @writeJSON (@proj \package.json),pkg
 
 HealthTask::checkHasPublishConfig.prompt = ->>
-  anwsers = await prompt [
+  p = prompt [
     type: \confirm
     name: "addPublishConfig"
     message: "publishConfig not exists in package.json would you like to create one?"
   ]
+  anwsers = await p
   if anwsers.addPublishConfig
     if @isJsEcosystem
       pkg = require @proj \package.json
@@ -278,5 +279,6 @@ HealthTask::checkHasPublishConfig.prompt = ->>
           access: "public",
           registry: "https://registry.npmjs.com"
         @writeJSON (@proj \package.json),pkg
-
+  p
+  
 export HealthTask 

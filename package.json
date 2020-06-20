@@ -1,6 +1,6 @@
 {
     "name": "@bung87/ostool",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "open source project tool",
     "main": "dist/index.js",
     "scripts": {
