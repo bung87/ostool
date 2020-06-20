@@ -81,7 +81,7 @@ class HealthTask extends Task
         questions .push type:\confirm,name:\addBuild,message:"add build to scripts"
       if not hasTest
         questions .push type:\confirm,name:\addTest,message:"add test to scripts"
-      ::checkScripts.prompt ?= !~>>
+      HealthTask::checkScripts.prompt ?= ~>>
         pkg = require (@proj "package.json")
         pkg.scripts ?= {}
         anwsers = await prompt questions
@@ -101,7 +101,9 @@ class HealthTask extends Task
           switch @primaryLang
           case ".ls"
             pkg.scripts.test = "lsc tests"
+        
         @writeJSON (@proj \package.json),pkg
+        anwsers
       return hasBuild and hasWatch and hasTest #and hasLint and hasFormat
 
   checkReadmeHasInstallation: ->

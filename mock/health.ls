@@ -27,7 +27,7 @@ mock = Mock(HealthTask) with
       @licenseSelected = true
     else if out.includes("Select") and not out.includes "Select License"
       subprocess.stdin.write "\n"
-    else if !@nameWrote and out.trim!.endsWith "Your name in License"
+    else if !@nameWrote and out.trim!.includes "Your name in License"
       subprocess.stdin.write "bung\n"
       @nameWrote = true
     
