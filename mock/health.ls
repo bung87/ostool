@@ -16,11 +16,11 @@ mock = Mock(HealthTask) with
   licenseSelected : false
   answer:(subprocess,data) !~>
   ## called in subprocess, no this context
-    out = data.toString!.trim!
+    out = data.toString!
     if out.length > 1
       log (info out)
       subprocess.stdout.resume!
-    if out.endsWith("(Y/n)")
+    if out.trim!.endsWith("(Y/n)")
       subprocess.stdin.write "Y\n"
     else if !@licenseSelected and out.includes "Select License"
       subprocess.stdin.write "MIT\n"

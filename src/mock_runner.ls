@@ -49,7 +49,7 @@ for file in files
   subprocess.on 'exit', ->
     removeFile dest
 
-  subprocess.stdout.on "data",mock.answer.bind(null,subprocess)
+  subprocess.stdout.on "data",mock.answer.bind(null,subprocess)#(data) -> mock.answer.apply(null,[subprocess,data])
 
 
 
