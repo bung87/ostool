@@ -9,6 +9,6 @@ require! {
 
 ctx = new Context process.cwd!
 task = new Task <<< ctx
-task.renderTo ".travis.yml",".travis.yml", coverage: false
+task.renderTo ".travis.yml",path.join("js", ".travis.yml"), coverage: false
 yml = path.join process.cwd!, \.travis.yml
 assert.equal << fs.existsSync yml, true
