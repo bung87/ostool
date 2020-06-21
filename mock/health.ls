@@ -29,7 +29,7 @@ mock = Mock(HealthTask) with
       stdin.write "bung\n"
       @nameWrote = true
     
-  beforeExit:(log) !->
+  beforeExit: !->>
   ## called in subprocess, this context is mock.task
     pkg = require @proj "package.json"
     assert "scripts" of pkg,"pkg has no scripts"
@@ -37,6 +37,7 @@ mock = Mock(HealthTask) with
     assert exists @proj \README.md
     assert exists @proj \LICENSE
     license = readFile @proj \LICENSE
+    readme = readFile @proj \README.md
     assert license.includes "MIT"
     assert license.includes "bung"
 

@@ -8,7 +8,7 @@
         "watch": "lsc -wco dist src",
         "build": "lsc -co dist src && cp -r src/templates dist/",
         "prepublishOnly": "npm run clean && npm run build",
-        "test": "lsc tests; lsc src/mock_runner.ls 'mock/**' "
+        "test": "lsc tests ; lsc src/mock_runner.ls 'mock/**'"
     },
     "publishConfig": {
         "access": "public",

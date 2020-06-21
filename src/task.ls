@@ -139,11 +139,8 @@ export class Task
 
     @taskQueue.reduce (p,func) ~>>
       if util.types.isAsyncFunction func
-        await p
-        await func ...
+        p.then ~>>
+          func ...
       else
         Promise.resolve(func ...)
     ,Promise.resolve()
-    .then !->>
-      process.stdout.end!
-      

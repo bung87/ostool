@@ -4,13 +4,12 @@ require!{
   child_process
   livescript: lsc
   "./std/io":{ writeFile,readFile,removeFile }
-  pirates:{addHook}
   glob
-  readline
 }
 
 tmp = """
 require!{
+  process
   livescript: lsc
   pirates:{addHook}
 }
@@ -42,7 +41,6 @@ for file in files
   dest = path.join dir,name + ".js"
   writeFile dest,js
   subprocess = child_process.fork dest,{stdio:['pipe', 'pipe', 'inherit',"ipc"]}
-
   subprocess.on 'unhandledRejection', (reason, promise) -> 
     console.error('Unhandled Rejection at:', promise, 'reason:', reason)
   subprocess.on 'uncaughtException', (err, origin) ->
@@ -50,7 +48,5 @@ for file in files
 
   subprocess.on 'exit', ->
     removeFile dest
-  # mock.answer.bind(null,subprocess,process.stdout)
   subprocess.stdout.on "data",(data) -> 
-    process.stdout.write data
     mock.answer.apply(null,[subprocess.stdin,data])

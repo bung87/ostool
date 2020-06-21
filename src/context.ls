@@ -48,6 +48,7 @@ export class Context
       org = config.registry.includes \https://registry.npmjs.org
       com = config.registry.includes \https://registry.npmjs.com
       used = !org and !com
+    return used
 
   isVscodeExt: ->
     if @isJsEcosystem
