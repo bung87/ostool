@@ -4,7 +4,7 @@ require!{
   "../src/health":{HealthTask}
   'assert': { strict:assert }
   "../src/std/io": {exists,readFile}
-  "../src/std/log": {log,info}
+  "../src/std/log": {log,info,success}
 }
 mock = Mock(HealthTask) with 
   setup:->
@@ -17,20 +17,29 @@ mock = Mock(HealthTask) with
   answer:(subprocess,data) !~>
   ## called in subprocess, no this context
     out = data.toString!
+    subprocess.stdout.pause!
     if out.length > 1
       log (info out)
-      subprocess.stdout.resume!
-      
+
     if out.trim!.endsWith("(Y/n)")
+      subprocess.stdin.pause!
       subprocess.stdin.write "Y\n"
+      subprocess.stdin.resume!
     else if !@licenseSelected and out.includes "Select License"
+      subprocess.stdin.pause!
       subprocess.stdin.write "MIT\n"
       @licenseSelected = true
+      subprocess.stdin.resume!
     else if out.includes("Select") and not out.includes "Select License"
+      subprocess.stdin.pause!
       subprocess.stdin.write "\n"
+      subprocess.stdin.resume!
     else if !@nameWrote and out.trim!.includes "Your name in License"
+      subprocess.stdin.pause!
       subprocess.stdin.write "bung\n"
+      subprocess.stdin.resume!
       @nameWrote = true
+    subprocess.stdout.resume!
     
   beforeExit:(log) !->
   ## called in subprocess, this context is mock.task

@@ -45,14 +45,14 @@ handler =
             query = (obj.__isTest or !isCI or process.stdout.isTTY)
             # if obj.__isTest
             #   console.log "query user:#{query}"
-            obj.taskQueue.add that if query and obj[prop].prompt
+            obj.taskQueue.push that if query and obj[prop].prompt
           ret
     else
       obj[prop]
 
 export class Task
   (@cwd = process.cwd!) -> 
-    @taskQueue = new Set()
+    @taskQueue = []
     return new Proxy(@, handler)
   installTask: (...deps) ->
     pm = whichPm @cwd
@@ -134,14 +134,16 @@ export class Task
 
   process: ->>
     for let key, value of @ 
-      when key of Task:: == false and typeof value == "function"
+      if key of Task:: == false and typeof value == "function"
         value ...
 
-    Array.from(@taskQueue).reduce (p,func) ~>>
+    @taskQueue.reduce (p,func) ~>>
       if util.types.isAsyncFunction func
-        p.then ~>>
-          await func ...
+        await p
+        await func ...
       else
         Promise.resolve(func ...)
     ,Promise.resolve()
+    .then !->>
+      process.stdout.end!
       

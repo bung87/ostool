@@ -40,7 +40,7 @@ for file in files
   dest = path.join dir,name + ".js"
   writeFile dest,js
   subprocess = child_process.fork dest,{stdio:['pipe', 'pipe', 'inherit',"ipc"]}
-
+  
   subprocess.on 'unhandledRejection', (reason, promise) -> 
     console.error('Unhandled Rejection at:', promise, 'reason:', reason)
   subprocess.on 'uncaughtException', (err, origin) ->
@@ -50,9 +50,3 @@ for file in files
     removeFile dest
 
   subprocess.stdout.on "data",mock.answer.bind(null,subprocess)#(data) -> mock.answer.apply(null,[subprocess,data])
-
-
-
-
-
-  

@@ -103,7 +103,7 @@ class HealthTask extends Task
             pkg.scripts.test = "lsc tests"
         
         @writeJSON (@proj \package.json),pkg
-        anwsers
+        
       return hasBuild and hasWatch and hasTest #and hasLint and hasFormat
 
   checkReadmeHasInstallation: ->
@@ -150,7 +150,7 @@ HealthTask::checkHas-ts-lint-format.prompt = ->>
   else
     Promise.resolve!
   
-HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
+HealthTask::checkHas-vscode-extension-bundle.prompt = !->>
   questions = [
     * type: \confirm
       name: "addRollup"
@@ -168,11 +168,8 @@ HealthTask::checkHas-vscode-extension-bundle.prompt = ->>
     src = @proj \rollup.config.ts
     @renderTo src,\rollup.config.ts,src:@priSourcesRoot
     log info "now you can bundle through `rollup -c rollup.config.ts`"
-    return Promise.resolve!
-  else
-    return Promise.resolve!
 
-HealthTask::checkHasLicense.prompt = ->>
+HealthTask::checkHasLicense.prompt = !->>
   questions = [
     * type: \confirm
       name: "addLicense"
@@ -193,28 +190,17 @@ HealthTask::checkHasLicense.prompt = ->>
     content = getLicense answers2.license, author: answers2.authorInLicense, year: String(new Date().getFullYear!)
     content = maxLine content
     @writeTo  @license,content
-    return answers2
-  else
-    return Promise.resolve!
+
 
 HealthTask::checkReadmeHasInstallation.prompt = ->>
-  return prompt [
+  answers = await prompt [
     type: \confirm
     name: "hasInstallation"
     message: "Readme has no Installation section, would you like to?"
   ]
-  .then (answers) ~>>
-    # Use user feedback for... whatever!!
-    console.log answers
-    if answers.hasInstallation
-      await ReadMeTask::gen ...
-  .catch (error) ~> 
-    if (error.isTtyError) 
-      # Prompt couldn't be rendered in the current environment
-      ...
-    else 
-      # Something else when wrong
-      console.error error
+  if answers.hasInstallation
+    await ReadMeTask::gen ...
+
 
 HealthTask::checkHasSetup.prompt = ->>
 
@@ -244,7 +230,7 @@ HealthTask::checkHasSetup.prompt = ->>
         message: "author"
     if answers.addSetup
       prompt questions
-      .then (answers) ~>
+      .then (answers) !~>
         tpl = @tpl \setup.py
         setupPath = @proj \setup.py
         content = @render tpl,answers 
@@ -257,7 +243,7 @@ HealthTask::checkHasSetup.prompt = ->>
       # Something else when wrong
       console.error error
 
-HealthTask::checkHas-pre-commit-hook.prompt = ->>
+HealthTask::checkHas-pre-commit-hook.prompt = !->>
   anwsers = await prompt [
     type: \confirm
     name: "addHook"
@@ -270,11 +256,8 @@ HealthTask::checkHas-pre-commit-hook.prompt = ->>
       if \husky of pkg == false
         pkg.husky = hooks:{"pre-commit": "npm test"}
         @writeJSON (@proj \package.json),pkg
-        return Promise.resolve!
-  else
-    return Promise.resolve!
 
-HealthTask::checkHasPublishConfig.prompt = ->>
+HealthTask::checkHasPublishConfig.prompt = !->>
 
   anwsers = await prompt [
     type: \confirm
@@ -289,8 +272,5 @@ HealthTask::checkHasPublishConfig.prompt = ->>
           access: "public",
           registry: "https://registry.npmjs.com"
         @writeJSON (@proj \package.json),pkg
-        return Promise.resolve!
-  else
-    return Promise.resolve!
 
 export HealthTask 

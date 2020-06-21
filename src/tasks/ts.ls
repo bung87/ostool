@@ -72,6 +72,5 @@ class TsTask extends Task
     log info "now you can use `npx eslint . --ext .js,.jsx,.ts,.tsx`"
     if anwsers.prettier
       log info "now you can add `prettier --write .`"
-    anwsers
 
 export TsTask
