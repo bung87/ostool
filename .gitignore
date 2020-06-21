@@ -1,5 +1,6 @@
 #### joe made this: http://goel.io/joe
 dist/
+ostool.log
 mock/*.js
 local_test.ls
 #### node ####

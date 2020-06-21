@@ -27,6 +27,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
+    'test': ['spec>=1.4.1','nose>=1.3.7','tox>=3.14.0']
     # 'fancy feature': ['django'],
 }
 
@@ -125,6 +126,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
+    test_suite = 'tests',
     # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,

@@ -62,7 +62,7 @@ export class ReadMeTask extends Task
       content = @render tpl,projectName: pkg.name, badges: await ReadMeTask::badges ... 
       @mergeWith @readme,content
     else if @isPyEcosystem
-      tpl =  @tpl << path.join \py,\README.md
+      tpl =  @tpl (path.join \py,\README.md)
       @answers ?= await prompt [
           * type:\input
             name:"pkgName"

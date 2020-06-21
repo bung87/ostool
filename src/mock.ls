@@ -36,7 +36,8 @@ class Mock
     # assert path.normalize(@task.cwd) !=  path.normalize(process.cwd!),"task cwd is this project"
     that.apply @task if @setup
     @prepare!
+    that.apply @task if @afterPrepare
     await @task.process!
-    
+
     # @tmpDir.removeCallback!
 export Mock

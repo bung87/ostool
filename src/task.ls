@@ -93,9 +93,11 @@ export class Task
       # glob.sync pattern,{cwd:cwd}
       rimraf.sync(pattern)
   
-  copyFile: (src,des) ->
+  copyFile: (src,dest) ->
     ## from this lib to project
-    fs.createReadStream(path.join __dirname,src ).pipe(fs.createWriteStream( path.join @cwd,dest ))
+    _src = if path.isAbsolute(src) then src else path.join(__dirname,src)
+    _dest = if path.isAbsolute(dest) then dest else path.join(@cwd,dest)
+    fs.createReadStream(_src ).pipe(fs.createWriteStream( _dest ))
 
   renderTo: (dest,tpl,ctx) ->
     tmp = readFile @tpl tpl

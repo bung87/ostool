@@ -8,6 +8,7 @@ require! {
   "./qa": { prompt }
   'is-ci':isCI
   "./tasks/ts": { TsTask }
+  "./tasks/travis":{ TravisTask }
   glob
   process
   'assert': { strict:assert }
@@ -42,6 +43,7 @@ class HealthTask extends Task
       @readmeFormat = path.extname files[0]
     else
       @readme = @proj \README.md
+      @readmeFormat = ".md"
     files.length == 1
 
   checkHasLicense: -> 
@@ -138,6 +140,21 @@ class HealthTask extends Task
           hasFormat = yes
       hasLint and hasFormat
 
+HealthTask::checkHasCI.prompt = ->>
+  questions = [
+    * type:\confirm
+      name:"addTravis"
+      message:"add travis config file?"
+    # * type:\confirm
+    #   name:"coverage"
+    #   message:"use coverage?"
+  ]
+  answers = await prompt questions
+  if answers.addTravis
+    return await TravisTask::travisTask.apply(this,[answers])
+  else
+    Promise.resolve!
+
 HealthTask::checkHas-ts-lint-format.prompt = ->>
   questions = [
     * type: \confirm
@@ -215,7 +232,7 @@ HealthTask::checkHasSetup.prompt = ->>
     questions =
       * type: \input
         name: "pkgName"
-        message: "pkgName"
+        message: "package name"
       * type: \input
         name: "disc"
         message: "disc"
