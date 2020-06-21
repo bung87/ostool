@@ -18,7 +18,6 @@ mock = Mock(HealthTask) with
   ## called in subprocess, no this context
   ## cant log here
     out = data.toString!
-
     if out.trim!.endsWith("(Y/n)")
       subprocess.stdin.write "Y\n"
     else if !@licenseSelected and out.includes "Select License"
@@ -29,7 +28,6 @@ mock = Mock(HealthTask) with
     else if !@nameWrote and out.trim!.includes "Your name in License"
       subprocess.stdin.write "bung\n"
       @nameWrote = true
-
     
   beforeExit:(log) !->
   ## called in subprocess, this context is mock.task
