@@ -18,27 +18,18 @@ mock = Mock(HealthTask) with
   ## called in subprocess, no this context
   ## cant log here
     out = data.toString!
-    subprocess.stdout.pause!
 
     if out.trim!.endsWith("(Y/n)")
-      subprocess.stdin.pause!
       subprocess.stdin.write "Y\n"
-      subprocess.stdin.resume!
     else if !@licenseSelected and out.includes "Select License"
-      subprocess.stdin.pause!
       subprocess.stdin.write "MIT\n"
       @licenseSelected = true
-      subprocess.stdin.resume!
     else if out.includes("Select") and not out.includes "Select License"
-      subprocess.stdin.pause!
       subprocess.stdin.write "\n"
-      subprocess.stdin.resume!
     else if !@nameWrote and out.trim!.includes "Your name in License"
-      subprocess.stdin.pause!
       subprocess.stdin.write "bung\n"
-      subprocess.stdin.resume!
       @nameWrote = true
-    subprocess.stdout.resume!
+
     
   beforeExit:(log) !->
   ## called in subprocess, this context is mock.task
