@@ -14,6 +14,7 @@ require!{
   livescript: lsc
   pirates:{addHook}
 }
+
 func = (code, filename) -> lsc.compile filename 
 revert = addHook func,{ exts: ['ls',""] }
 
@@ -25,6 +26,7 @@ if require.main == module
   module.exports.run!
 
 """
+
 cwd = process.cwd!
 pattern = process.argv.lsc[1]
 files = glob.sync pattern,{ignore:["**/*.js"],cwd:cwd,nodir:true}
@@ -40,7 +42,7 @@ for file in files
   dest = path.join dir,name + ".js"
   writeFile dest,js
   subprocess = child_process.fork dest,{stdio:['pipe', 'pipe', 'inherit',"ipc"]}
-  
+
   subprocess.on 'unhandledRejection', (reason, promise) -> 
     console.error('Unhandled Rejection at:', promise, 'reason:', reason)
   subprocess.on 'uncaughtException', (err, origin) ->

@@ -16,10 +16,9 @@ mock = Mock(HealthTask) with
   licenseSelected : false
   answer:(subprocess,data) !~>
   ## called in subprocess, no this context
+  ## cant log here
     out = data.toString!
     subprocess.stdout.pause!
-    if out.length > 1
-      log (info out)
 
     if out.trim!.endsWith("(Y/n)")
       subprocess.stdin.pause!
