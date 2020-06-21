@@ -53,4 +53,4 @@ for file in files
   # mock.answer.bind(null,subprocess,process.stdout)
   subprocess.stdout.on "data",(data) -> 
     process.stdout.write data
-    mock.answer.apply(null,[subprocess,data])
+    mock.answer.apply(null,[subprocess.stdin,data])

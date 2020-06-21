@@ -14,19 +14,19 @@ mock = Mock(HealthTask) with
 
   nameWrote :false
   licenseSelected : false
-  answer:(subprocess,data) !~>
+  answer:(stdin,data) !~>
   ## called in subprocess, no this context
   ## cant log here
     out = data.toString!
     if out.trim!.endsWith("(Y/n)")
-      subprocess.stdin.write "Y\n"
+      stdin.write "Y\n"
     else if !@licenseSelected and out.includes "Select License"
-      subprocess.stdin.write "MIT\n"
+      stdin.write "MIT\n"
       @licenseSelected = true
     else if out.includes("Select") and not out.includes "Select License"
-      subprocess.stdin.write "\n"
+      stdin.write "\n"
     else if !@nameWrote and out.trim!.includes "Your name in License"
-      subprocess.stdin.write "bung\n"
+      stdin.write "bung\n"
       @nameWrote = true
     
   beforeExit:(log) !->
