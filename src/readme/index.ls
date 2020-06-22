@@ -6,7 +6,7 @@ require! {
   "../template":{ compile }
   glob
   "../qa": { prompt }
-  "./badges": { vsExtBadges,nodeBadges,pybadges }
+  "./badges": { vsExtBadges,nodeBadges,pyBadges,nimBadges }
 }
 
 export class ReadMeTask extends Task
@@ -52,6 +52,17 @@ export class ReadMeTask extends Task
       ]
       _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
       _badges.filter( (x) -> x ).join " "
+    else if @isNimEcosystem
+      @answers ?= await prompt [
+          * type:\input
+            name: "travisUsername"
+            message:"travis username"
+          * repo:\input
+            name:"repoUri"
+            message:"repository uri"
+      ]
+      _badges = nimBadges @answers.travisUsername,@answers.repoUri
+      _badges.filter( (x) -> x ).join " "
 
   gen: ->>
     if @isJsEcosystem
@@ -62,6 +73,21 @@ export class ReadMeTask extends Task
       @mergeWith @readme,content
     else if @isPyEcosystem
       tpl =  @tpl (path.join \py,\README.md)
+      @answers ?= await prompt [
+          * type:\input
+            name:"pkgName"
+            message:"package name"
+          * type:\input
+            name: "travisUsername"
+            message:"travis username"
+          * repo:\input
+            name:"repoUri"
+            message:"repository uri"
+      ]
+      content = @render tpl,projectName: @answers.pkgName, badges: await ReadMeTask::badges ... 
+      @mergeWith @readme,content
+    else if @isNimEcosystem 
+      tpl =  @tpl (path.join \nim,\README.md)
       @answers ?= await prompt [
           * type:\input
             name:"pkgName"

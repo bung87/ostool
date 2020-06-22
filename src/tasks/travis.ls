@@ -18,6 +18,11 @@ class TravisTask extends Task
       travis = @tpl path.join("js",\.travis.yml)
       origin = @render travis,ctx
       @mergeWith \.travis.yml,origin
+    else if @isNimEcosystem
+      travis = @tpl path.join("nim",\.travis.yml)
+      origin = @render travis,ctx
+      @mergeWith \.travis.yml,origin
+
     else if @isPyEcosystem
       travis = @tpl path.join("py",\.travis.yml)
       origin = @render travis,ctx

@@ -32,6 +32,7 @@ export class Context
     @isJsEcosystem = @isJsEcosystem!
     @isVscodeExt = @isVscodeExt!
     @isPyEcosystem = @isPyEcosystem!
+    @isNimEcosystem = @isNimEcosystem!
     if @isJsEcosystem
       @useMirror = @useMirror!
 
@@ -40,6 +41,11 @@ export class Context
   
   isJsEcosystem: ->
     exists @proj \package.json
+
+  isNimEcosystem: ->
+    l = glob.sync "*.nimble",cwd:@cwd,nodir: true
+    console.log l
+    l.length == 1
 
   useMirror: ->
     used = no

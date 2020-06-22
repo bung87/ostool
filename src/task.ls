@@ -13,6 +13,7 @@ require! {
   'universal-diff':{ mergeStr,compareStr } 
   "./std/process": { runOut,runIn}
   "./std/log":{ log,warning,success,alert,info}
+  'assert': { strict:assert }
 }
 
 
@@ -55,21 +56,28 @@ export class Task
     @taskQueue = []
     return new Proxy(@, handler)
   installTask: (...deps) ->
-    pm = whichPm @cwd
-    switch pm
-    case "yarn"
-      deps .unshift \add
-      deps .push \-D
-    case "npm"
-      deps .unshift \install
-      deps .push \--save-dev
-    case "pnpm"
-      deps .unshift \install
-      deps .push \-d
-    default 
-      pm = \npm
-      deps .unshift \install
-      deps .push \--save-dev
+    pm = null
+    if @isJsEcosystem
+      pm = whichPm @cwd
+      switch pm
+      case "yarn"
+        deps .unshift \add
+        deps .push \-D
+      case "npm"
+        deps .unshift \install
+        deps .push \--save-dev
+      case "pnpm"
+        deps .unshift \install
+        deps .push \-d
+      default 
+        pm = \npm
+        deps .unshift \install
+        deps .push \--save-dev
+    else if @isNimEcosystem
+      pm = "nimble"
+    else if @isPyEcosystem
+      pm = "pip"
+    assert pm != null,"Can't detect package manager!"
     runOut(pm,@cwd,...deps)
   
   mergeWith: (dest,content) ->

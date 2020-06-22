@@ -21,6 +21,9 @@ vsTrending = (publisher,extname) -> "[![](https://vsmarketplacebadge.apphb.com/t
 # py
 pypi = (pkgName) -> "[![PyPI](https://img.shields.io/pypi/v/#{pkgName}.svg)](https://pypi.python.org/pypi/#{pkgName})"
 
+#nim
+nimble = (repoUri) ->"[![nimble](https://raw.githubusercontent.com/yglukhov/nimble-tag/master/nimble.png)](#{repoUri})"
+
 export vsExtBadges = ( publisher,extname ) ->
   badges = 
     vsVersion publisher,extname
@@ -45,8 +48,12 @@ export nodeBadges = (primary,pkgName,username,repo) ->
     deps username,repo
     license pkgName
 
-export pybadges = (pkgName,username,repo) ->
+export pyBadges = (pkgName,username,repo) ->
   badges =
     buildStatus username,repo
     pypi pkgName
 
+export nimBadges = (username,repo) ->
+   badges =
+    buildStatus username,repo
+    nimble repo

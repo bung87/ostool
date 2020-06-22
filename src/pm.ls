@@ -3,6 +3,7 @@ require! {
   path
   process
   "./std/io":{ exists }
+  glob
 }
 
 useYarn = (cwd) ->
@@ -13,6 +14,18 @@ useNpm = (cwd) ->
 
 usePnpm = (cwd) ->
   exists path.join cwd, \pnpm-lock.yaml
+
+useNimble = (cwd) ->
+  l = glob.sync "*.nimble"
+  l.length == 1
+
+useNimph = (cwd) ->
+  l = glob.sync "*.nimble"
+  if l.length == 1
+    name = path.parse(l[0]).name
+    exists path.join cwd,name + ""
+  else
+    false
 
 export whichPm = (cwd) ->
   ## find which package manager be used (result cached)

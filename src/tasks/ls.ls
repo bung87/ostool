@@ -5,5 +5,8 @@ require! {
 }
 f = path.join __dirname,"ts.ls"
 ast = lsc.ast readFile f
-console.log ast.toString!
+
+ast.eachChild (node, name, i) ->
+  console.log node, name, i
+# console.log ast,ast.toString!
 
