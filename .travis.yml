@@ -3,3 +3,5 @@ node_js:
   - 'node' # use latest stable nodejs version
 script:
   - npm run test
+after_script:
+  - cat ostool.log
