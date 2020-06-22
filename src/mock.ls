@@ -29,7 +29,7 @@ class Mock
     @task <<< @ctx
     @task.__isTest = true
     process.on 'exit' !~>>
-      await that.apply @task if @beforeExit
+      await that.apply @task,[console.log] if @beforeExit
       rimraf.sync(@tmpDir.name)
   run: ->>
     assert @task.cwd.length > 0,"task has no cwd"

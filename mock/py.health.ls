@@ -53,6 +53,8 @@ mock = Mock(HealthTask) with
     assert exists @proj \LICENSE
     license = readFile @proj \LICENSE
     readme = readFile @proj \README.md
+    assert readme.includes "Build Status"
+    assert readme.includes "PyPI"
     assert license.includes "MIT"
     assert license.includes "bung"
     assert exists @proj \.travis.yml

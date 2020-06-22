@@ -14,45 +14,44 @@ export class ReadMeTask extends Task
 
   badges: ->> 
     primary = @primaryLang
-    if exists @readme
-      if @isJsEcosystem
-        pkg = require @proj \package.json
-        username = pkg.author
-        repo = if typeof pkg.repository == "object"
-        then 
-          path.parse(pkg.repository.url).name
-        else if typeof pkg.repository == "string"
-          path.parse(pkg.repository).name
-        else
-          pkg.name
-        pkgName = pkg.name
-        
-        if @isVscodeExt
-          publisher = pkg.publisher
-          extname = pkg.name
-          _badges = vsExtBadges publisher,extname
-          _badges.filter( (x) -> x ).join " "
-        else if @isJsEcosystem
-          _badges = nodeBadges primary,pkgName,username,repo
-          _badges.filter( (x) -> x ).join " "
-      else if @isPyEcosystem
-        # travis username 
-        # pkgName 
-        # setup(
-        #   name='bixin',
-        @answers ?= await prompt [
-          * type:\input
-            name:"pkgName"
-            message:"package name"
-          * type:\input
-            name: "travisUsername"
-            message:"travis username"
-          * repo:\input
-            name:"repoUri"
-            message:"repository uri"
-        ]
-        _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
+    if @isJsEcosystem
+      pkg = require @proj \package.json
+      username = pkg.author
+      repo = if typeof pkg.repository == "object"
+      then 
+        path.parse(pkg.repository.url).name
+      else if typeof pkg.repository == "string"
+        path.parse(pkg.repository).name
+      else
+        pkg.name
+      pkgName = pkg.name
+      
+      if @isVscodeExt
+        publisher = pkg.publisher
+        extname = pkg.name
+        _badges = vsExtBadges publisher,extname
         _badges.filter( (x) -> x ).join " "
+      else if @isJsEcosystem
+        _badges = nodeBadges primary,pkgName,username,repo
+        _badges.filter( (x) -> x ).join " "
+    else if @isPyEcosystem
+      # travis username 
+      # pkgName 
+      # setup(
+      #   name='bixin',
+      @answers ?= await prompt [
+        * type:\input
+          name:"pkgName"
+          message:"package name"
+        * type:\input
+          name: "travisUsername"
+          message:"travis username"
+        * repo:\input
+          name:"repoUri"
+          message:"repository uri"
+      ]
+      _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
+      _badges.filter( (x) -> x ).join " "
 
   gen: ->>
     if @isJsEcosystem
