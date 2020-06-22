@@ -73,13 +73,14 @@ export class Task
     runOut(pm,@cwd,...deps)
   
   mergeWith: (dest,content) ->
-    if exists dest
-      origin = readFile dest 
+    _dest = if path.isAbsolute(dest) then dest else path.join(@cwd,dest)
+    if exists _dest
+      origin = readFile _dest 
       ret = compareStr origin, content
       cnt = mergeStr origin, ret
-      writeFile dest,cnt
+      writeFile _dest,cnt
     else
-      writeFile dest,content
+      writeFile _dest,content
   
   cleanTask: ->
     pkg = require @proj \package.json
@@ -104,7 +105,7 @@ export class Task
     render = compile tmp
     writeFile path.resolve(@cwd,dest),render(ctx)
 
-  render: (tpl,ctx) ->
+  render: (tpl,ctx = {}) ->
     _tpl = readFile tpl
     render = compile(_tpl)
     render ctx
