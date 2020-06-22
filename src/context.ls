@@ -44,7 +44,6 @@ export class Context
 
   isNimEcosystem: ->
     l = glob.sync "*.nimble",cwd:@cwd,nodir: true
-    console.log l
     l.length == 1
 
   useMirror: ->

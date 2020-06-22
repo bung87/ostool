@@ -50,7 +50,7 @@ export class ReadMeTask extends Task
           name:"repoUri"
           message:"repository uri"
       ]
-      _badges = pybadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
+      _badges = pyBadges @answers.pkgName,@answers.travisUsername,@answers.repoUri
       _badges.filter( (x) -> x ).join " "
     else if @isNimEcosystem
       @answers ?= await prompt [
