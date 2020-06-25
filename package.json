@@ -1,6 +1,6 @@
 {
     "name": "@bung87/ostool",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "description": "open source project tool",
     "main": "dist/index.js",
     "scripts": {
@@ -22,7 +22,7 @@
         "dist"
     ],
     "bin": {
-        "ostool": "dist/cli"
+        "ostool": "dist/cli.js"
     },
     "author": "bung87",
     "license": "MIT",
