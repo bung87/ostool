@@ -9,7 +9,7 @@ require! {
   'is-ci':isCI
   "./tasks/ts": { TsTask }
   "./tasks/travis":{ TravisTask }
-  glob
+  "fast-glob":glob
   process
   'assert': { strict:assert }
   "./std/log":{log,info}

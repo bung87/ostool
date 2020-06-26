@@ -2,7 +2,7 @@ require! {
   fs
   path
   process
-  glob
+  "fast-glob":glob
   ini
   minimatch
   'assert': { strict:assert }

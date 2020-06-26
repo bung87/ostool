@@ -3,7 +3,7 @@ require! {
   path
   process
   "./std/io":{ exists }
-  glob
+  "fast-glob":glob
 }
 
 useYarn = (cwd) ->

@@ -5,7 +5,7 @@ require!{
   "./context": { Context }
   "./health": { HealthTask }
   "./task": { Task }
-  glob
+  "fast-glob":glob
   util
   fs
 }

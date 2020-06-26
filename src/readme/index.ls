@@ -4,7 +4,6 @@ require! {
   "../std/io":{ exists, readFile,writeFile }
   "../context": { Context }
   "../template":{ compile }
-  glob
   "../qa": { prompt }
   "./badges": { vsExtBadges,nodeBadges,pyBadges,nimBadges }
 }

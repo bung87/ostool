@@ -4,7 +4,6 @@ require! {
   "../std/io":{ exists, readFile }
   "../context": { Context }
   "../qa": { prompt }
-  glob
   "prelude-ls":{union}
   "../std/log":{log,info}
   'lodash.merge':merge

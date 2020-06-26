@@ -5,7 +5,7 @@ require!{
   child_process
   livescript: lsc
   "./std/io":{ writeFile,readFile,removeFile }
-  glob
+  "fast-glob":glob
 }
 
 tmp = """
