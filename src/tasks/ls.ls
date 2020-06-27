@@ -1,12 +1,30 @@
 require! {
-  livescript: lsc
   path
-  "../std/io":{readFile}
+  "../task":{ Task }
+  "../std/io":{ exists, readFile }
+  "../context": { Context }
+  "../qa": { prompt }
+  "prelude-ls":{union}
+  "../std/log":{log,info}
+  'lodash.merge':merge
+  process
 }
-f = path.join __dirname,"ts.ls"
-ast = lsc.ast readFile f
 
-ast.eachChild (node, name, i) ->
-  console.log node, name, i
-# console.log ast,ast.toString!
+class LsTask extends Task
+  -> return super ...
+  lsLintTask: ->>
 
+    anwsers = await prompt [
+      * type: "confirm",
+        message: "use ls-lint",
+        name: "lsLint"
+    ]
+
+    if anwsers.lsLint
+      deps = [\ls-lint]
+      @installTask ...deps
+    p = path.join("ls",\ls-lint.lson)
+    @mergeWith (@proj \ls-lint.lson),@render @tpl p
+    log info "now you can use `ls-lint \\\"{,!(node_modules)/**/}*.ls?(on)\\\"`"
+
+export LsTask

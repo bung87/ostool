@@ -13,8 +13,8 @@ require!{
 yargs.scriptName "ostool"
   ..usage('$0 <cmd> [args]')
   ..command "health","health check",
-    (yargs)->
-    (argv)->
+    (yargs) ->
+    (argv) ->
       ctx = new Context process.cwd!
       task = new HealthTask <<< ctx
       task.process!

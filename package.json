@@ -5,6 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "clean": "rm -rf dist",
+        "lint": "ls-lint \"{,!(node_modules)/**/}*.ls?(on)\"",
         "watch": "lsc -wco dist src",
         "build": "lsc -co dist src && cp -r src/templates dist/",
         "prepublishOnly": "npm run clean && npm run build",
@@ -44,6 +45,7 @@
         "is-ci": "^2.0.0",
         "license": "^1.0.3",
         "lodash.merge": "^4.6.2",
+        "ls-lint": "^0.1.2",
         "minimatch": "^3.0.4",
         "rimraf": "^3.0.2",
         "universal-diff": "^2.0.2",

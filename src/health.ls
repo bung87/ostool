@@ -6,8 +6,9 @@ require! {
   "./readme": { ReadMeTask }
   "./license":{getLicense, maxLine}
   "./qa": { prompt }
-  'is-ci':isCI
+  'is-ci': isCI
   "./tasks/ts": { TsTask }
+  "./tasks/ls": { LsTask }
   "./tasks/travis":{ TravisTask }
   "fast-glob":glob
   process
@@ -163,7 +164,10 @@ HealthTask::checkHas-ts-lint-format.prompt = ->>
     ]
   answers = await prompt questions
   if answers.addLintFormat
-    return await TsTask::tsLintTask ...
+    if @primaryLang == ".ts"
+      return await TsTask::tsLintTask ...
+    else if @primaryLang == ".ls"
+      return await LsTask::lsLintTask  ...
   else
     Promise.resolve!
   
