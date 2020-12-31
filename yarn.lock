@@ -894,7 +894,7 @@ please-upgrade-node@^3.2.0:
   dependencies:
     semver-compare "^1.0.0"
 
-prelude-ls@^1.1.2:
+prelude-ls@^1.1.2, prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://r.cnpmjs.org/prelude-ls/download/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha1-3rxkidem5rDnYRiIzsiAM30xY5Y=

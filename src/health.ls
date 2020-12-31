@@ -277,6 +277,8 @@ HealthTask::checkHas-pre-commit-hook.prompt = !->>
       if \husky of pkg == false
         pkg.husky = hooks:{"pre-commit": "npm test"}
         @writeJSON (@proj \package.json),pkg
+    else if @isNimEcosystem
+      @installTask \stage
 
 HealthTask::checkHasPublishConfig.prompt = !->>
 

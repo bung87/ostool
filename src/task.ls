@@ -75,6 +75,7 @@ export class Task
         deps .push \--save-dev
     else if @isNimEcosystem
       pm = "nimble"
+      deps .push \-y
     else if @isPyEcosystem
       pm = "pip"
     assert pm != null,"Can't detect package manager!"

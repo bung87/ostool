@@ -1,0 +1,15 @@
+on: [push, pull_request]
+name: "aaa"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nim: [ 'stable', 'devel' ]
+    steps:
+      - uses: actions/checkout@master
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: ${{ matrix.nim }}
+  #   - run: nimble build -Y
+      - run: nimble test -Y
